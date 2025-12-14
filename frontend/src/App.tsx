@@ -8,8 +8,9 @@ import {
   useEdgesState,
   useReactFlow,
   ReactFlowProvider,
+  addEdge,
 } from '@xyflow/react';
-import type { Node } from '@xyflow/react';
+import type { Node, Edge, Connection } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { Sidebar } from './components/Sidebar';
@@ -33,8 +34,13 @@ const getNodeId = () => `node_${nodeId++}`;
 function Flow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
-  const [edges, , onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const { screenToFlowPosition } = useReactFlow();
+
+  const onConnect = useCallback(
+    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
 
   const onDragOver = useCallback((event: DragEvent) => {
     event.preventDefault();
@@ -76,6 +82,7 @@ function Flow() {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
         onDrop={onDrop}
         onDragOver={onDragOver}
         nodeTypes={nodeTypes}
