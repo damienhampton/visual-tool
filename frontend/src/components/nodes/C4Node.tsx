@@ -2,7 +2,7 @@ import { Handle, Position } from '@xyflow/react';
 
 export type C4NodeType = 'person' | 'softwareSystem' | 'container' | 'component';
 
-export interface C4NodeData {
+export interface C4NodeData extends Record<string, unknown> {
   label: string;
   description?: string;
   type: C4NodeType;

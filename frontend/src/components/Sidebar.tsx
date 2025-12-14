@@ -1,4 +1,4 @@
-import { DragEvent } from 'react';
+import type { DragEvent } from 'react';
 import type { C4NodeType } from './nodes/C4Node';
 
 const c4Elements: { type: C4NodeType; label: string; color: string }[] = [
