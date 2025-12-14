@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import type { DragEvent } from 'react';
 import {
   ReactFlow,
@@ -17,6 +17,8 @@ import { Sidebar } from './components/Sidebar';
 import { C4Node } from './components/nodes/C4Node';
 import type { C4NodeType, C4NodeData } from './components/nodes/C4Node';
 
+const STORAGE_KEY = 'c4-diagram';
+
 const nodeTypes = {
   c4Node: C4Node,
 };
@@ -28,14 +30,46 @@ const defaultLabels: Record<C4NodeType, string> = {
   component: 'New Component',
 };
 
-let nodeId = 0;
+interface StoredDiagram {
+  nodes: Node[];
+  edges: Edge[];
+  nodeIdCounter: number;
+}
+
+const loadFromStorage = (): StoredDiagram | null => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (e) {
+    console.error('Failed to load diagram from localStorage:', e);
+  }
+  return null;
+};
+
+const saveToStorage = (nodes: Node[], edges: Edge[], nodeIdCounter: number) => {
+  try {
+    const data: StoredDiagram = { nodes, edges, nodeIdCounter };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error('Failed to save diagram to localStorage:', e);
+  }
+};
+
+const initialData = loadFromStorage();
+let nodeId = initialData?.nodeIdCounter ?? 0;
 const getNodeId = () => `node_${nodeId++}`;
 
 function Flow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialData?.nodes ?? []);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialData?.edges ?? []);
   const { screenToFlowPosition } = useReactFlow();
+
+  useEffect(() => {
+    saveToStorage(nodes, edges, nodeId);
+  }, [nodes, edges]);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
