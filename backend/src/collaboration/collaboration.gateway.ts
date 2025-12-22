@@ -65,6 +65,9 @@ export class CollaborationGateway
 
     await client.join(diagramId);
 
+    // Remove any existing connections for this user (handles page reloads)
+    await this.collaborationService.removeUserByUserId(diagramId, user.id);
+
     const color = this.collaborationService.generateUserColor();
     
     await this.collaborationService.addUserToRoom(diagramId, {
@@ -74,11 +77,13 @@ export class CollaborationGateway
       color,
     });
 
-    const activeUsers = await this.collaborationService.getRoomUsers(diagramId);
+    const allUsers = await this.collaborationService.getRoomUsers(diagramId);
+    // Filter out the current user from the list sent to them
+    const otherUsers = allUsers.filter(u => u.socketId !== client.id);
 
     client.emit('room-joined', {
       diagramId,
-      activeUsers,
+      activeUsers: otherUsers,
       yourColor: color,
     });
 

@@ -49,6 +49,27 @@ export class CollaborationService {
     }
   }
 
+  async removeUserByUserId(diagramId: string, userId: string): Promise<void> {
+    const room = this.rooms.get(diagramId);
+    if (room) {
+      // Find and remove all socket connections for this user
+      const socketsToRemove: string[] = [];
+      for (const [socketId, user] of room.entries()) {
+        if (user.userId === userId) {
+          socketsToRemove.push(socketId);
+        }
+      }
+      
+      for (const socketId of socketsToRemove) {
+        room.delete(socketId);
+      }
+
+      if (room.size === 0) {
+        this.rooms.delete(diagramId);
+      }
+    }
+  }
+
   async getRoomUsers(diagramId: string): Promise<RoomUser[]> {
     const room = this.rooms.get(diagramId);
     if (!room) {
