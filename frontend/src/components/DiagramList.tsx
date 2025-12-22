@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { diagramApi, Diagram } from '../lib/api';
+import { diagramApi } from '../lib/api';
+import type { Diagram } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 
 interface DiagramListProps {

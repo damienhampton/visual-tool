@@ -19,10 +19,12 @@ import { DiagramList } from './components/DiagramList';
 import { Sidebar } from './components/Sidebar';
 import { C4Node } from './components/nodes/C4Node';
 import type { C4NodeType, C4NodeData } from './components/nodes/C4Node';
-import { diagramApi, Diagram } from './lib/api';
+import { diagramApi } from './lib/api';
+import type { Diagram } from './lib/api';
 import { useCollaboration } from './hooks/useCollaboration';
 import { RemoteCursors } from './components/RemoteCursors';
 import { UserPresence } from './components/UserPresence';
+import { ShareDialog } from './components/ShareDialog';
 
 const nodeTypes = {
   c4Node: C4Node,
@@ -47,6 +49,7 @@ function Flow({ diagramId }: FlowProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [diagram, setDiagram] = useState<Diagram | null>(null);
+  const [showShareDialog, setShowShareDialog] = useState(false);
   const { screenToFlowPosition } = useReactFlow();
   const { user } = useAuth();
   const { isConnected, activeUsers, myColor, sendCursorPosition } = useCollaboration({
@@ -69,6 +72,12 @@ function Flow({ diagramId }: FlowProps) {
       }
     } catch (error) {
       console.error('Failed to load diagram:', error);
+    }
+  };
+
+  const handleTokenRegenerated = (newToken: string) => {
+    if (diagram) {
+      setDiagram({ ...diagram, shareToken: newToken });
     }
   };
 
@@ -153,8 +162,8 @@ function Flow({ diagramId }: FlowProps) {
   }
 
   return (
-    <div 
-      ref={reactFlowWrapper} 
+    <div
+      ref={reactFlowWrapper}
       style={{ flex: 1, position: 'relative' }}
       onMouseMove={handleMouseMove}
     >
@@ -172,8 +181,28 @@ function Flow({ diagramId }: FlowProps) {
           fontSize: '14px',
           fontWeight: 'bold',
           color: '#333',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
         }}>
-          {diagram.title}
+          <span>{diagram.title}</span>
+          {(diagram.userRole === 'owner' || diagram.userRole === 'editor') && (
+            <button
+              onClick={() => setShowShareDialog(true)}
+              style={{
+                padding: '4px 12px',
+                background: '#1168bd',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: 'bold',
+              }}
+            >
+              Share
+            </button>
+          )}
         </div>
       )}
       {user && (
@@ -185,6 +214,14 @@ function Flow({ diagramId }: FlowProps) {
         />
       )}
       <RemoteCursors users={activeUsers} />
+      {showShareDialog && diagram && (
+        <ShareDialog
+          diagramId={diagram.id}
+          shareToken={diagram.shareToken}
+          onClose={() => setShowShareDialog(false)}
+          onTokenRegenerated={handleTokenRegenerated}
+        />
+      )}
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -208,6 +245,23 @@ function AppContent() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showDiagramList, setShowDiagramList] = useState(false);
   const [currentDiagramId, setCurrentDiagramId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shareToken = params.get('share');
+
+    if (shareToken && user) {
+      diagramApi.getByShareToken(shareToken)
+        .then((diagram) => {
+          setCurrentDiagramId(diagram.id);
+          window.history.replaceState({}, '', window.location.pathname);
+        })
+        .catch((err) => {
+          console.error('Failed to load shared diagram:', err);
+          alert('Failed to load shared diagram. The link may be invalid or expired.');
+        });
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!isLoading && !user) {
