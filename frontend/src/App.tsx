@@ -20,6 +20,9 @@ import { Sidebar } from './components/Sidebar';
 import { C4Node } from './components/nodes/C4Node';
 import type { C4NodeType, C4NodeData } from './components/nodes/C4Node';
 import { diagramApi, Diagram } from './lib/api';
+import { useCollaboration } from './hooks/useCollaboration';
+import { RemoteCursors } from './components/RemoteCursors';
+import { UserPresence } from './components/UserPresence';
 
 const nodeTypes = {
   c4Node: C4Node,
@@ -45,6 +48,10 @@ function Flow({ diagramId }: FlowProps) {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [diagram, setDiagram] = useState<Diagram | null>(null);
   const { screenToFlowPosition } = useReactFlow();
+  const { user } = useAuth();
+  const { isConnected, activeUsers, myColor, sendCursorPosition } = useCollaboration({
+    diagramId,
+  });
 
   useEffect(() => {
     if (diagramId) {
@@ -97,6 +104,18 @@ function Flow({ diagramId }: FlowProps) {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  const handleMouseMove = useCallback(
+    (event: React.MouseEvent) => {
+      if (!reactFlowWrapper.current) return;
+      const bounds = reactFlowWrapper.current.getBoundingClientRect();
+      sendCursorPosition({
+        x: event.clientX - bounds.left,
+        y: event.clientY - bounds.top,
+      });
+    },
+    [sendCursorPosition]
+  );
+
   const onDrop = useCallback(
     (event: DragEvent) => {
       event.preventDefault();
@@ -134,7 +153,11 @@ function Flow({ diagramId }: FlowProps) {
   }
 
   return (
-    <div ref={reactFlowWrapper} style={{ flex: 1, position: 'relative' }}>
+    <div 
+      ref={reactFlowWrapper} 
+      style={{ flex: 1, position: 'relative' }}
+      onMouseMove={handleMouseMove}
+    >
       {diagram && (
         <div style={{
           position: 'absolute',
@@ -153,6 +176,15 @@ function Flow({ diagramId }: FlowProps) {
           {diagram.title}
         </div>
       )}
+      {user && (
+        <UserPresence
+          users={activeUsers}
+          myColor={myColor}
+          myName={user.name}
+          isConnected={isConnected}
+        />
+      )}
+      <RemoteCursors users={activeUsers} />
       <ReactFlow
         nodes={nodes}
         edges={edges}
