@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { DiagramsModule } from './diagrams/diagrams.module';
+import { CollaborationModule } from './collaboration/collaboration.module';
 import { User } from './entities/user.entity';
 import { Diagram } from './entities/diagram.entity';
 import { DiagramVersion } from './entities/diagram-version.entity';
@@ -28,6 +30,8 @@ import { DiagramCollaborator } from './entities/diagram-collaborator.entity';
       }),
     }),
     AuthModule,
+    DiagramsModule,
+    CollaborationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
