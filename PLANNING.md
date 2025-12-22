@@ -297,33 +297,46 @@ Stored in `DiagramVersion.data`:
 - **Auth**: JWT + Passport.js (with guest access support)
 
 #### Tasks
-- [ ] Backend setup
-  - [ ] NestJS project initialization
-  - [ ] PostgreSQL database setup
-  - [ ] Database schema and migrations (User, Diagram, DiagramVersion, DiagramCollaborator)
-  - [ ] WebSocket gateway with socket.io
-  - [ ] Yjs WebSocket provider integration
-- [ ] Authentication
-  - [ ] User registration/login (JWT)
-  - [ ] Guest user creation with diagram links
-  - [ ] Share token generation for diagrams
-  - [ ] Auth guards and middleware
-- [ ] Diagram persistence
-  - [ ] Save diagram API endpoint
-  - [ ] Load diagram API endpoint
-  - [ ] Diagram versioning/snapshots
-  - [ ] List user's diagrams
-- [ ] Real-time collaboration
-  - [ ] Yjs document synchronization
-  - [ ] Multi-user editing (concurrent node/edge updates)
-  - [ ] Cursor position broadcasting
-  - [ ] User presence indicators (active users list)
-  - [ ] Cursor rendering with user colors/names
-- [ ] Sharing & permissions
-  - [ ] Generate shareable links
-  - [ ] Permission levels (owner, editor, viewer)
-  - [ ] Guest access via share token
-  - [ ] Diagram access control
+- [x] Backend setup
+  - [x] NestJS project initialization
+  - [x] PostgreSQL database setup
+  - [x] Database schema and migrations (User, Diagram, DiagramVersion, DiagramCollaborator)
+  - [x] WebSocket gateway with socket.io
+  - [x] Yjs WebSocket provider integration (server-side support)
+- [x] Authentication
+  - [x] User registration/login (JWT)
+  - [x] Guest user creation with diagram links
+  - [x] Share token generation for diagrams
+  - [x] Auth guards and middleware
+  - [x] WebSocket JWT authentication
+- [x] Diagram persistence
+  - [x] Save diagram API endpoint
+  - [x] Load diagram API endpoint
+  - [x] Diagram versioning/snapshots
+  - [x] List user's diagrams
+  - [x] Update diagram endpoint
+  - [x] Delete diagram endpoint
+- [x] Real-time collaboration (Backend)
+  - [x] Yjs document synchronization (WebSocket events)
+  - [x] Multi-user editing support (room-based)
+  - [x] Cursor position broadcasting
+  - [x] User presence indicators (active users list)
+  - [ ] Cursor rendering with user colors/names (Frontend)
+- [x] Sharing & permissions
+  - [x] Generate shareable links
+  - [x] Permission levels (owner, editor, viewer)
+  - [x] Guest access via share token
+  - [x] Diagram access control
+  - [x] Collaborator management endpoints
+- [ ] Frontend integration
+  - [ ] Socket.io client setup
+  - [ ] Yjs + React Flow integration
+  - [ ] Connect to WebSocket server
+  - [ ] Implement cursor rendering
+  - [ ] User presence UI
+  - [ ] Diagram list/selection UI
+  - [ ] Authentication UI (login/register)
+  - [ ] Share dialog
 
 ### Phase 3: Enhanced Diagramming
 - [ ] Connect shapes with edges/arrows (basic connection exists, enhance with labels)
