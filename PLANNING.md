@@ -146,9 +146,139 @@ Basically:
 
 ---
 
+## Data Model Design
+
+### Database Schema
+
+#### User
+```typescript
+{
+  id: uuid (PK)
+  email?: string (unique, nullable for guests)
+  name: string
+  passwordHash?: string (nullable for guests)
+  isGuest: boolean
+  createdAt: timestamp
+  updatedAt: timestamp
+}
+```
+
+#### Diagram
+```typescript
+{
+  id: uuid (PK)
+  title: string
+  ownerId: uuid (FK -> User)
+  shareToken: string (unique, for guest access)
+  isPublic: boolean
+  createdAt: timestamp
+  updatedAt: timestamp
+}
+```
+
+#### DiagramVersion
+```typescript
+{
+  id: uuid (PK)
+  diagramId: uuid (FK -> Diagram)
+  version: int
+  data: jsonb // Full React Flow state (nodes, edges, viewport)
+  createdAt: timestamp
+  createdBy: uuid (FK -> User)
+}
+```
+
+#### DiagramCollaborator
+```typescript
+{
+  id: uuid (PK)
+  diagramId: uuid (FK -> Diagram)
+  userId: uuid (FK -> User)
+  role: enum ('owner', 'editor', 'viewer')
+  addedAt: timestamp
+}
+```
+
+#### ActiveSession (Redis or in-memory)
+```typescript
+{
+  sessionId: uuid
+  diagramId: uuid
+  userId: uuid
+  userName: string
+  cursor: { x: number, y: number }
+  color: string
+  lastSeen: timestamp
+}
+```
+
+### Diagram Data Structure (JSONB)
+
+Stored in `DiagramVersion.data`:
+
+```typescript
+{
+  nodes: [
+    {
+      id: string
+      type: 'c4Node'
+      position: { x: number, y: number }
+      data: {
+        label: string
+        description?: string
+        type: 'person' | 'softwareSystem' | 'container' | 'component'
+        color?: string // For future customization
+        metadata?: Record<string, any> // Extensible for AWS resources, etc.
+      }
+    }
+  ],
+  edges: [
+    {
+      id: string
+      source: string // node id
+      target: string // node id
+      label?: string
+      type?: string
+      animated?: boolean
+      style?: Record<string, any>
+    }
+  ],
+  viewport: { 
+    x: number, 
+    y: number, 
+    zoom: number 
+  }
+}
+```
+
+### API Endpoints (Planned)
+
+**Auth:**
+- `POST /auth/register` - Create user account
+- `POST /auth/login` - Login with email/password
+- `POST /auth/guest` - Create guest user
+- `GET /auth/me` - Get current user
+
+**Diagrams:**
+- `POST /diagrams` - Create new diagram
+- `GET /diagrams` - List user's diagrams
+- `GET /diagrams/:id` - Get diagram by ID
+- `PUT /diagrams/:id` - Update diagram metadata
+- `DELETE /diagrams/:id` - Delete diagram
+- `POST /diagrams/:id/share` - Generate/regenerate share token
+- `GET /diagrams/shared/:token` - Access diagram via share token
+
+**Collaboration:**
+- `WebSocket /collaboration/:diagramId` - Real-time sync
+- `GET /diagrams/:id/collaborators` - List collaborators
+- `POST /diagrams/:id/collaborators` - Add collaborator
+- `DELETE /diagrams/:id/collaborators/:userId` - Remove collaborator
+
+---
+
 ## Task List
 
-### Phase 1: MVP
+### Phase 1: MVP ✅ COMPLETE
 - [x] Project setup (React + Vite + TypeScript)
 - [x] Install and configure React Flow
 - [x] Full-window canvas component
@@ -159,24 +289,58 @@ Basically:
 - [x] Load diagram from localStorage
 - [x] Basic styling (clean, modern UI)
 
-### Phase 2: Enhanced Diagramming
+### Phase 2: Real-Time Collaboration (PRIORITY)
+
+#### Tech Stack
+- **Backend**: NestJS + WebSockets (socket.io) + Yjs + PostgreSQL + Redis (optional)
+- **Frontend**: Yjs + y-websocket + React Flow integration
+- **Auth**: JWT + Passport.js (with guest access support)
+
+#### Tasks
+- [ ] Backend setup
+  - [ ] NestJS project initialization
+  - [ ] PostgreSQL database setup
+  - [ ] Database schema and migrations (User, Diagram, DiagramVersion, DiagramCollaborator)
+  - [ ] WebSocket gateway with socket.io
+  - [ ] Yjs WebSocket provider integration
+- [ ] Authentication
+  - [ ] User registration/login (JWT)
+  - [ ] Guest user creation with diagram links
+  - [ ] Share token generation for diagrams
+  - [ ] Auth guards and middleware
+- [ ] Diagram persistence
+  - [ ] Save diagram API endpoint
+  - [ ] Load diagram API endpoint
+  - [ ] Diagram versioning/snapshots
+  - [ ] List user's diagrams
+- [ ] Real-time collaboration
+  - [ ] Yjs document synchronization
+  - [ ] Multi-user editing (concurrent node/edge updates)
+  - [ ] Cursor position broadcasting
+  - [ ] User presence indicators (active users list)
+  - [ ] Cursor rendering with user colors/names
+- [ ] Sharing & permissions
+  - [ ] Generate shareable links
+  - [ ] Permission levels (owner, editor, viewer)
+  - [ ] Guest access via share token
+  - [ ] Diagram access control
+
+### Phase 3: Enhanced Diagramming
+- [ ] Connect shapes with edges/arrows (basic connection exists, enhance with labels)
 - [ ] Snap-to-grid
-- [ ] Connect shapes with edges/arrows
 - [ ] Object colour customization
 - [ ] Grouping elements
 - [ ] Auto-layout options
-- [ ] Multiple diagrams (list/select)
-
-### Phase 3: Backend + Cloud
-- [ ] NestJS backend setup
-- [ ] User registration/login (auth)
-- [ ] Save diagrams to cloud (database)
-- [ ] Load diagrams from cloud
+- [ ] Multiple diagrams (list/select in UI)
+- [ ] Diagram search and filtering
 - [ ] Export to JSON/YAML
+- [ ] Import from JSON/YAML
 
 ### Phase 4: Advanced Features
 - [ ] Detailed object types (AWS resources, etc.)
 - [ ] Drill-down navigation between C4 levels
 - [ ] Side-by-side views
 - [ ] Templates
+- [ ] Diagram history/version control UI
+- [ ] Comments and annotations
 - [ ] Git integration
