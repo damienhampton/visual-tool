@@ -149,15 +149,15 @@ Basically:
 ## Task List
 
 ### Phase 1: MVP
-- [ ] Project setup (React + Vite + TypeScript)
-- [ ] Install and configure React Flow
-- [ ] Full-window canvas component
-- [ ] Basic shape palette (C4 elements: Person, Software System, Container, Component)
-- [ ] Drag shapes onto canvas
-- [ ] Add/edit text on shapes
-- [ ] Save diagram to localStorage
-- [ ] Load diagram from localStorage
-- [ ] Basic styling (clean, modern UI)
+- [x] Project setup (React + Vite + TypeScript)
+- [x] Install and configure React Flow
+- [x] Full-window canvas component
+- [x] Basic shape palette (C4 elements: Person, Software System, Container, Component)
+- [x] Drag shapes onto canvas
+- [x] Add/edit text on shapes
+- [x] Save diagram to localStorage
+- [x] Load diagram from localStorage
+- [x] Basic styling (clean, modern UI)
 
 ### Phase 2: Enhanced Diagramming
 - [ ] Snap-to-grid
