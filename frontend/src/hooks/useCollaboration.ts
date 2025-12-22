@@ -30,13 +30,17 @@ export function useCollaboration({ diagramId, onYjsUpdate }: UseCollaborationOpt
   const yjsDocRef = useRef<Y.Doc | null>(null);
 
   useEffect(() => {
-    if (!token || !user) return;
+    if (!token || !user || !diagramId) return;
 
+    console.log('Initializing WebSocket connection...');
     const newSocket = io('http://localhost:3000/collaboration', {
       auth: {
         token,
       },
       transports: ['websocket'],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5,
     });
 
     newSocket.on('connect', () => {
@@ -44,21 +48,26 @@ export function useCollaboration({ diagramId, onYjsUpdate }: UseCollaborationOpt
       setIsConnected(true);
     });
 
-    newSocket.on('disconnect', () => {
-      console.log('WebSocket disconnected');
+    newSocket.on('disconnect', (reason) => {
+      console.log('WebSocket disconnected:', reason);
       setIsConnected(false);
     });
 
     newSocket.on('connect_error', (error) => {
       console.error('WebSocket connection error:', error);
+      setIsConnected(false);
     });
 
     setSocket(newSocket);
 
     return () => {
+      console.log('Cleaning up WebSocket connection');
       newSocket.close();
+      setSocket(null);
+      setIsConnected(false);
+      setActiveUsers([]);
     };
-  }, [token, user]);
+  }, [token, user, diagramId]);
 
   useEffect(() => {
     if (!socket || !diagramId || !user) return;
