@@ -31,6 +31,7 @@ import { UserPresence } from './components/UserPresence';
 import { ShareDialog } from './components/ShareDialog';
 import { AccountMenu } from './components/AccountMenu';
 import { PricingPage } from './components/PricingPage';
+import { ResetPassword } from './components/ResetPassword';
 
 const nodeTypes = {
   c4Node: C4Node,
@@ -279,10 +280,18 @@ function AppContent() {
   const [showDiagramList, setShowDiagramList] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
   const [currentDiagramId, setCurrentDiagramId] = useState<string | null>(null);
+  const [resetToken, setResetToken] = useState<string | null>(null);
+  const [showResetSuccess, setShowResetSuccess] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const shareToken = params.get('share');
+    const token = params.get('token');
+
+    if (token) {
+      setResetToken(token);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
 
     if (shareToken && user) {
       diagramApi.getByShareToken(shareToken)
@@ -350,6 +359,25 @@ function AppContent() {
         />
       )}
       {showPricing && <PricingPage onClose={() => setShowPricing(false)} />}
+      {resetToken && (
+        <ResetPassword
+          token={resetToken}
+          onClose={() => setResetToken(null)}
+          onSuccess={() => {
+            setResetToken(null);
+            setShowResetSuccess(true);
+            setTimeout(() => {
+              setShowResetSuccess(false);
+              setShowAuthModal(true);
+            }, 2000);
+          }}
+        />
+      )}
+      {showResetSuccess && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+          Password reset successfully! Please login with your new password.
+        </div>
+      )}
     </div>
   );
 }

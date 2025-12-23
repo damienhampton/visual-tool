@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, MoreThan, LessThan } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { User } from '../entities/user.entity';
 import { Diagram } from '../entities/diagram.entity';
 import { DiagramVersion } from '../entities/diagram-version.entity';
 import { DiagramCollaborator } from '../entities/diagram-collaborator.entity';
 import { Subscription, SubscriptionStatus } from '../entities/subscription.entity';
+import { EmailService } from '../email/email.service';
+import { InviteUserDto } from './dto/invite-user.dto';
 
 @Injectable()
 export class AdminService {
@@ -20,6 +24,7 @@ export class AdminService {
     private collaboratorRepository: Repository<DiagramCollaborator>,
     @InjectRepository(Subscription)
     private subscriptionRepository: Repository<Subscription>,
+    private emailService: EmailService,
   ) {}
 
   async getDashboardStats() {
@@ -509,5 +514,52 @@ export class AdminService {
 
     if (totalAtStart === 0) return '0%';
     return ((canceled / totalAtStart) * 100).toFixed(2) + '%';
+  }
+
+  async inviteUser(inviteUserDto: InviteUserDto, invitedByName: string): Promise<{ user: User; tempPassword?: string }> {
+    const { email, name, sendEmail = true, tier = 'free', isAdmin = false } = inviteUserDto;
+
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
+    }
+
+    const tempPassword = crypto.randomBytes(8).toString('hex');
+    const passwordHash = await bcrypt.hash(tempPassword, 10);
+
+    const user = this.userRepository.create({
+      email,
+      name,
+      passwordHash,
+      isGuest: false,
+      isAdmin,
+    });
+
+    await this.userRepository.save(user);
+
+    if (tier !== 'free') {
+      const subscription = this.subscriptionRepository.create({
+        userId: user.id,
+        tier: tier as any,
+        status: SubscriptionStatus.ACTIVE,
+        stripeCustomerId: 'manual_override',
+        stripeSubscriptionId: 'manual_override',
+      });
+      await this.subscriptionRepository.save(subscription);
+    }
+
+    if (sendEmail) {
+      await this.emailService.sendUserInvitationEmail(
+        email,
+        name,
+        invitedByName,
+        tempPassword,
+      );
+    }
+
+    return { user, tempPassword: sendEmail ? undefined : tempPassword };
   }
 }

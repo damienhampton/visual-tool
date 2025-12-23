@@ -844,4 +844,6 @@ Focus on pragmatic testing that provides value without creating maintenance burd
 - [ ] Git integration
 - [ ] Team workspaces
 - [ ] SSO integration
-- [ ] Manually upgrade/downgrade users via admin
+- [x] Manually upgrade/downgrade users via admin
+- [x] Forgotten password flow
+- [x] Admin app - add/invite new user (with optional welcome email)

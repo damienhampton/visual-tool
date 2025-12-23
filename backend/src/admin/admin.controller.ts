@@ -213,4 +213,17 @@ export class AdminController {
       targetType,
     );
   }
+
+  @Post('users/invite')
+  async inviteUser(@Body() inviteUserDto: any, @Request() req) {
+    const result = await this.adminService.inviteUser(inviteUserDto, req.user.name);
+    await this.auditLogService.log(
+      req.user.id,
+      'INVITE_USER',
+      'user',
+      result.user.id,
+      { email: inviteUserDto.email, tier: inviteUserDto.tier },
+    );
+    return result;
+  }
 }

@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminApi } from '../lib/api';
-import { Search, Trash2, Shield, UserCog } from 'lucide-react';
+import { Search, Trash2, Shield, UserCog, UserPlus } from 'lucide-react';
 
 export default function Users() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('');
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [userDetails, setUserDetails] = useState<any>(null);
+  const [showInviteModal, setShowInviteModal] = useState(false);
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
@@ -31,7 +33,9 @@ export default function Users() {
       adminApi.users.subscriptionOverride(userId, tier),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      setSelectedUser(null);
+      if (selectedUser) {
+        fetchUserDetails(selectedUser.id);
+      }
     },
   });
 
@@ -44,6 +48,29 @@ export default function Users() {
     },
   });
 
+  const inviteUserMutation = useMutation({
+    mutationFn: (data: any) => adminApi.users.invite(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setShowInviteModal(false);
+    },
+  });
+
+  useEffect(() => {
+    if (selectedUser) {
+      fetchUserDetails(selectedUser.id);
+    }
+  }, [selectedUser]);
+
+  const fetchUserDetails = async (userId: string) => {
+    try {
+      const response = await adminApi.users.get(userId);
+      setUserDetails(response.data);
+    } catch (error) {
+      console.error('Failed to fetch user details:', error);
+    }
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
@@ -53,6 +80,13 @@ export default function Users() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Users</h1>
+        <button
+          onClick={() => setShowInviteModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <UserPlus className="w-5 h-5" />
+          Invite User
+        </button>
       </div>
 
       <div className="bg-white rounded-lg shadow mb-6">
@@ -220,39 +254,72 @@ export default function Users() {
               <p className="font-medium">{selectedUser.email || 'N/A'}</p>
             </div>
 
+            {userDetails && (
+              <div className="mb-4">
+                <p className="text-sm text-gray-600">Current Subscription</p>
+                <p className="font-medium">
+                  {userDetails.subscription ? (
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
+                      userDetails.subscription.tier === 'pro' 
+                        ? 'bg-blue-100 text-blue-800' 
+                        : userDetails.subscription.tier === 'team'
+                        ? 'bg-purple-100 text-purple-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {userDetails.subscription.tier.toUpperCase()} ({userDetails.subscription.status})
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-800">
+                      FREE
+                    </span>
+                  )}
+                </p>
+              </div>
+            )}
+
             <div className="mb-6">
-              <p className="text-sm text-gray-600 mb-2">Subscription Override</p>
+              <p className="text-sm text-gray-600 mb-2">Manual Subscription Override</p>
+              <p className="text-xs text-gray-500 mb-3">Grant or revoke subscription tiers without payment</p>
               <div className="flex gap-2">
                 <button
-                  onClick={() =>
-                    subscriptionOverrideMutation.mutate({
-                      userId: selectedUser.id,
-                      tier: 'free',
-                    })
-                  }
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  onClick={() => {
+                    if (confirm('Set this user to Free tier? This will remove any active subscription.')) {
+                      subscriptionOverrideMutation.mutate({
+                        userId: selectedUser.id,
+                        tier: 'free',
+                      });
+                    }
+                  }}
+                  disabled={subscriptionOverrideMutation.isPending}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Free
                 </button>
                 <button
-                  onClick={() =>
-                    subscriptionOverrideMutation.mutate({
-                      userId: selectedUser.id,
-                      tier: 'pro',
-                    })
-                  }
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  onClick={() => {
+                    if (confirm('Grant this user Pro tier access?')) {
+                      subscriptionOverrideMutation.mutate({
+                        userId: selectedUser.id,
+                        tier: 'pro',
+                      });
+                    }
+                  }}
+                  disabled={subscriptionOverrideMutation.isPending}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Pro
                 </button>
                 <button
-                  onClick={() =>
-                    subscriptionOverrideMutation.mutate({
-                      userId: selectedUser.id,
-                      tier: 'team',
-                    })
-                  }
-                  className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                  onClick={() => {
+                    if (confirm('Grant this user Team tier access?')) {
+                      subscriptionOverrideMutation.mutate({
+                        userId: selectedUser.id,
+                        tier: 'team',
+                      });
+                    }
+                  }}
+                  disabled={subscriptionOverrideMutation.isPending}
+                  className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Team
                 </button>
@@ -278,7 +345,10 @@ export default function Users() {
 
             <div className="flex gap-2">
               <button
-                onClick={() => setSelectedUser(null)}
+                onClick={() => {
+                  setSelectedUser(null);
+                  setUserDetails(null);
+                }}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
               >
                 Close
@@ -287,6 +357,144 @@ export default function Users() {
           </div>
         </div>
       )}
+
+      {showInviteModal && <InviteUserModal onClose={() => setShowInviteModal(false)} onSubmit={inviteUserMutation} />}
+    </div>
+  );
+}
+
+function InviteUserModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: any }) {
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [tier, setTier] = useState<'free' | 'pro' | 'team'>('free');
+  const [sendEmail, setSendEmail] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [tempPassword, setTempPassword] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const result = await onSubmit.mutateAsync({ email, name, tier, sendEmail, isAdmin });
+      if (!sendEmail && result.data.tempPassword) {
+        setTempPassword(result.data.tempPassword);
+      } else {
+        onClose();
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to invite user');
+    }
+  };
+
+  if (tempPassword) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">User Created Successfully</h2>
+          <div className="mb-4">
+            <p className="text-sm text-gray-600 mb-2">Email</p>
+            <p className="font-medium">{email}</p>
+          </div>
+          <div className="mb-4">
+            <p className="text-sm text-gray-600 mb-2">Temporary Password</p>
+            <div className="bg-gray-100 p-3 rounded font-mono text-sm break-all">{tempPassword}</div>
+            <p className="text-xs text-gray-500 mt-2">Please share this password securely with the user.</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Invite New User</h2>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="user@example.com"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="John Doe"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Subscription Tier</label>
+            <select
+              value={tier}
+              onChange={(e) => setTier(e.target.value as 'free' | 'pro' | 'team')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="free">Free</option>
+              <option value="pro">Pro</option>
+              <option value="team">Team</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={sendEmail}
+                onChange={(e) => setSendEmail(e.target.checked)}
+                className="mr-2"
+              />
+              <span className="text-sm text-gray-700">Send welcome email with login credentials</span>
+            </label>
+          </div>
+
+          <div className="mb-6">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={isAdmin}
+                onChange={(e) => setIsAdmin(e.target.checked)}
+                className="mr-2"
+              />
+              <span className="text-sm text-gray-700">Grant admin access</span>
+            </label>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={onSubmit.isPending}
+              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {onSubmit.isPending ? 'Inviting...' : 'Invite User'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

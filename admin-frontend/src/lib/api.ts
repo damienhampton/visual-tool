@@ -61,6 +61,13 @@ export const adminApi = {
     delete: (id: string) => api.delete(`/admin/users/${id}`),
     subscriptionOverride: (id: string, tier: 'free' | 'pro' | 'team') =>
       api.post(`/admin/users/${id}/subscription-override`, { tier }),
+    invite: (data: {
+      email: string;
+      name: string;
+      sendEmail?: boolean;
+      tier?: 'free' | 'pro' | 'team';
+      isAdmin?: boolean;
+    }) => api.post('/admin/users/invite', data),
   },
   subscriptions: {
     list: (page: number = 1, limit: number = 20, filter?: string) =>

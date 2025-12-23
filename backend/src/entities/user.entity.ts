@@ -33,6 +33,12 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   lastActiveAt: Date;
 
+  @Column({ nullable: true, select: false })
+  resetToken: string;
+
+  @Column({ type: 'timestamp', nullable: true, select: false })
+  resetTokenExpiry: Date;
+
   @CreateDateColumn()
   @Index()
   createdAt: Date;

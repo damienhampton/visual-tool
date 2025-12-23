@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { ForgotPassword } from './ForgotPassword';
 
 interface AuthModalProps {
   onClose: () => void;
@@ -7,6 +8,7 @@ interface AuthModalProps {
 
 export function AuthModal({ onClose }: AuthModalProps) {
   const [mode, setMode] = useState<'login' | 'register' | 'guest'>('login');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -86,6 +88,17 @@ export function AuthModal({ onClose }: AuthModalProps) {
                   minLength={6}
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
+                {mode === 'login' && (
+                  <div className="mt-2 text-right">
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotPassword(true)}
+                      className="text-xs text-blue-600 hover:text-blue-700 underline"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -153,6 +166,13 @@ export function AuthModal({ onClose }: AuthModalProps) {
           ×
         </button>
       </div>
+
+      {showForgotPassword && (
+        <ForgotPassword
+          onClose={() => setShowForgotPassword(false)}
+          onBackToLogin={() => setShowForgotPassword(false)}
+        />
+      )}
     </div>
   );
 }

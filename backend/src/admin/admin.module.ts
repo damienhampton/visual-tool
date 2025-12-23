@@ -9,6 +9,7 @@ import { DiagramVersion } from '../entities/diagram-version.entity';
 import { DiagramCollaborator } from '../entities/diagram-collaborator.entity';
 import { Subscription } from '../entities/subscription.entity';
 import { AuditLog } from '../entities/audit-log.entity';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuditLog } from '../entities/audit-log.entity';
       Subscription,
       AuditLog,
     ]),
+    EmailModule,
   ],
   controllers: [AdminController],
   providers: [AdminService, AuditLogService],
