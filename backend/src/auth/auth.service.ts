@@ -51,7 +51,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'name', 'isGuest', 'passwordHash'],
+      select: ['id', 'email', 'name', 'isGuest', 'isAdmin', 'passwordHash'],
     });
 
     if (!user || !user.passwordHash) {
@@ -89,7 +89,7 @@ export class AuthService {
   }
 
   private generateAuthResponse(user: User): AuthResponseDto {
-    const payload = { sub: user.id, email: user.email, isGuest: user.isGuest };
+    const payload = { sub: user.id, email: user.email, isGuest: user.isGuest, isAdmin: user.isAdmin };
     const accessToken = this.jwtService.sign(payload);
 
     return {
@@ -99,6 +99,7 @@ export class AuthService {
         email: user.email,
         name: user.name,
         isGuest: user.isGuest,
+        isAdmin: user.isAdmin,
       },
     };
   }

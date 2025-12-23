@@ -26,6 +26,9 @@ export class User {
   @Column({ default: false })
   isGuest: boolean;
 
+  @Column({ default: false })
+  isAdmin: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

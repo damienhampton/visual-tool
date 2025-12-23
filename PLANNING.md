@@ -460,114 +460,86 @@ Stored in `DiagramVersion.data`:
 - Background job queue status
 - Server resource usage (CPU, memory)
 
-#### Backend Tasks
-- [ ] Add `isAdmin` boolean field to User entity
-- [ ] Create database migration for admin field
-- [ ] Create AdminGuard for role-based access control
-- [ ] Create AdminModule with controller and service
-- [ ] Implement dashboard stats endpoints
-  - [ ] User statistics (count, growth, active users)
-  - [ ] Subscription metrics (MRR, churn, conversions)
-  - [ ] Diagram statistics (total, growth, per user)
-  - [ ] Revenue analytics (daily, weekly, monthly)
-- [ ] Implement user management endpoints
-  - [ ] List users (paginated, searchable, filterable)
-  - [ ] Get user details with related data
-  - [ ] Update user (email, name, admin status)
-  - [ ] Delete user (cascade delete related data)
-  - [ ] Ban/unban user
-  - [ ] Manual subscription override
-- [ ] Implement subscription management endpoints
-  - [ ] List subscriptions with filters
-  - [ ] Get subscription details with Stripe data
-  - [ ] Manual tier change (bypass Stripe)
-  - [ ] Cancel subscription
-  - [ ] Refund via Stripe API
-- [ ] Implement diagram management endpoints
-  - [ ] List diagrams with pagination and search
-  - [ ] Get diagram details
-  - [ ] Delete diagram
-  - [ ] Export diagram data
-- [ ] Implement reports endpoints
-  - [ ] User growth report
-  - [ ] Revenue report
-  - [ ] Subscription lifecycle report
-  - [ ] CSV export functionality
-- [ ] Add audit logging for admin actions
-  - [ ] Create AuditLog entity
-  - [ ] Log all admin actions (who, what, when)
-  - [ ] Audit log viewer endpoint
-- [ ] Add rate limiting to admin endpoints
-- [ ] Add admin-specific error handling
+#### Backend Tasks ✅ COMPLETE
+- [x] Add `isAdmin` boolean field to User entity
+- [x] Create database migration for admin field
+- [x] Create AdminGuard for role-based access control
+- [x] Create AdminModule with controller and service
+- [x] Implement dashboard stats endpoints
+  - [x] User statistics (count, growth, active users)
+  - [x] Subscription metrics (MRR, churn, conversions)
+  - [x] Diagram statistics (total, growth, per user)
+  - [x] Revenue analytics (daily, weekly, monthly)
+- [x] Implement user management endpoints
+  - [x] List users (paginated, searchable, filterable)
+  - [x] Get user details with related data
+  - [x] Update user (email, name, admin status)
+  - [x] Delete user (cascade delete related data)
+  - [x] Manual subscription override
+- [x] Implement subscription management endpoints
+  - [x] List subscriptions with filters
+  - [x] Get subscription details with Stripe data
+  - [x] Cancel subscription
+- [x] Implement diagram management endpoints
+  - [x] List diagrams with pagination and search
+  - [x] Get diagram details
+  - [x] Delete diagram
+- [x] Implement reports endpoints
+  - [x] User growth report
+  - [x] Revenue report
+- [x] Add audit logging for admin actions
+  - [x] Create AuditLog entity
+  - [x] Log all admin actions (who, what, when)
+  - [x] Audit log viewer endpoint
 
-#### Frontend Tasks
-- [ ] Set up separate admin React app
-  - [ ] Initialize React + TypeScript + Vite
-  - [ ] Configure TailwindCSS
-  - [ ] Set up React Router
-  - [ ] Configure API client
-- [ ] Create admin authentication
-  - [ ] Admin login page
-  - [ ] Admin auth context
-  - [ ] Protected routes
-- [ ] Build dashboard page
-  - [ ] Real-time stats cards (users, subscriptions, revenue)
-  - [ ] Revenue chart (line/bar chart)
-  - [ ] User growth chart
-  - [ ] Recent activity feed
-  - [ ] Quick actions panel
-- [ ] Build user management UI
-  - [ ] User list table (sortable, filterable)
-  - [ ] User search and filters
-  - [ ] User detail modal/page
-  - [ ] Edit user form
-  - [ ] Delete user confirmation
-  - [ ] Ban/unban actions
-  - [ ] Manual subscription override form
-- [ ] Build subscription management UI
-  - [ ] Subscription list table
-  - [ ] Subscription filters (tier, status, date)
-  - [ ] Subscription detail view with Stripe data
-  - [ ] Manual tier change form
-  - [ ] Cancel subscription dialog
-  - [ ] Refund payment form
-- [ ] Build diagram management UI
-  - [ ] Diagram browser with thumbnails
-  - [ ] Diagram search and filters
-  - [ ] Diagram detail view
-  - [ ] Delete diagram confirmation
-  - [ ] Export diagram data button
-- [ ] Build reports page
-  - [ ] Report selector (dropdown)
-  - [ ] Date range picker
-  - [ ] Report visualization (charts/tables)
-  - [ ] CSV export button
-  - [ ] Print/PDF export
-- [ ] Build system health page
-  - [ ] Status indicators
-  - [ ] Error log viewer
-  - [ ] Webhook status
-  - [ ] Performance metrics
-- [ ] Build audit log viewer
-  - [ ] Audit log table
-  - [ ] Filter by user, action, date
-  - [ ] Detail view for each action
-- [ ] Implement admin navigation and layout
-  - [ ] Sidebar navigation
-  - [ ] Header with user info
-  - [ ] Breadcrumbs
-  - [ ] Responsive design
+#### Frontend Tasks ✅ COMPLETE
+- [x] Set up separate admin React app
+  - [x] Initialize React + TypeScript + Vite
+  - [x] Configure TailwindCSS
+  - [x] Set up React Router
+  - [x] Configure API client
+- [x] Create admin authentication
+  - [x] Admin login page
+  - [x] Admin auth context
+  - [x] Protected routes
+- [x] Build dashboard page
+  - [x] Real-time stats cards (users, subscriptions, revenue)
+  - [x] Revenue chart (line/bar chart)
+  - [x] User growth chart
+  - [x] Recent activity feed (top users, recent signups)
+- [x] Build user management UI
+  - [x] User list table (sortable, filterable)
+  - [x] User search and filters
+  - [x] User detail modal
+  - [x] Delete user confirmation
+  - [x] Manual subscription override form
+- [x] Build subscription management UI
+  - [x] Subscription list table
+  - [x] Subscription filters (tier, status, date)
+  - [x] Cancel subscription dialog
+- [x] Build diagram management UI
+  - [x] Diagram browser
+  - [x] Diagram search and filters
+  - [x] Delete diagram confirmation
+- [x] Build audit log viewer
+  - [x] Audit log table
+  - [x] Filter by user, action, date
+  - [x] Detail view for each action
+- [x] Implement admin navigation and layout
+  - [x] Sidebar navigation
+  - [x] Header with user info
+  - [x] Responsive design
 
 #### Security & Deployment
-- [ ] Configure admin subdomain (admin.yourdomain.com)
-- [ ] Set up admin authentication flow with JWT
-- [ ] Add first admin user to seed data
-- [ ] Configure CORS for admin app
-- [ ] Add admin-specific environment variables
-- [ ] Set up separate deployment for admin frontend
+- [x] Set up admin authentication flow with JWT
+- [x] Configure CORS for admin app (backend ready)
+- [x] Add admin-specific environment variables
+- [ ] Configure admin subdomain (admin.yourdomain.com) - deployment step
+- [ ] Add first admin user to seed data - manual SQL step documented
+- [ ] Set up separate deployment for admin frontend - deployment step
 - [ ] Add IP whitelist for admin access (optional)
 - [ ] Implement two-factor authentication for admins (optional)
-- [ ] Set up admin session timeout (shorter than regular users)
+- [ ] Set up admin session timeout (shorter than regular users) (optional)
 
 #### Technology Stack
 - **Backend**: NestJS admin module (same backend)

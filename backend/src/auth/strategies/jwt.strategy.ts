@@ -8,6 +8,7 @@ export interface JwtPayload {
   sub: string;
   email: string | null;
   isGuest: boolean;
+  isAdmin: boolean;
 }
 
 @Injectable()

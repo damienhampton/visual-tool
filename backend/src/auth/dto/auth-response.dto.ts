@@ -5,5 +5,6 @@ export class AuthResponseDto {
     email: string | null;
     name: string;
     isGuest: boolean;
+    isAdmin: boolean;
   };
 }

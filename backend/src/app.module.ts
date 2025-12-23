@@ -7,11 +7,13 @@ import { AuthModule } from './auth/auth.module';
 import { DiagramsModule } from './diagrams/diagrams.module';
 import { CollaborationModule } from './collaboration/collaboration.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { AdminModule } from './admin/admin.module';
 import { User } from './entities/user.entity';
 import { Diagram } from './entities/diagram.entity';
 import { DiagramVersion } from './entities/diagram-version.entity';
 import { DiagramCollaborator } from './entities/diagram-collaborator.entity';
 import { Subscription } from './entities/subscription.entity';
+import { AuditLog } from './entities/audit-log.entity';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { Subscription } from './entities/subscription.entity';
         username: configService.get('DATABASE_USER'),
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
-        entities: [User, Diagram, DiagramVersion, DiagramCollaborator, Subscription],
+        entities: [User, Diagram, DiagramVersion, DiagramCollaborator, Subscription, AuditLog],
         synchronize: true, // Set to false in production, use migrations instead
       }),
     }),
@@ -35,6 +37,7 @@ import { Subscription } from './entities/subscription.entity';
     DiagramsModule,
     CollaborationModule,
     SubscriptionsModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
