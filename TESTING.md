@@ -40,6 +40,7 @@ Black box tests that test the entire application through HTTP/WebSocket APIs:
 
 - **`auth.e2e-spec.ts`**: Authentication flows (register, login, guest, JWT validation)
 - **`diagrams.e2e-spec.ts`**: Diagram CRUD, permissions, collaboration, sharing
+- **`collaboration.e2e-spec.ts`**: WebSocket collaboration (connections, rooms, cursors, Y.js sync)
 - **`app.e2e-spec.ts`**: Basic application health check
 
 #### Test Utilities (`test/test-utils.ts`)
@@ -68,6 +69,14 @@ Helper functions for common test operations:
 - Collaboration management
 - Share token access
 - Version management
+
+✅ **WebSocket Collaboration**
+- Connection authentication and lifecycle
+- Room management (join, leave, disconnect)
+- Cursor position broadcasting
+- Y.js document synchronization (updates, sync steps)
+- Awareness updates
+- Multi-user scenarios and room isolation
 
 ✅ **Data Isolation**
 - Each test uses fresh in-memory database
@@ -149,8 +158,8 @@ describe('AuthModal', () => {
 ### Backend
 - [ ] Module integration tests for each NestJS module
 - [ ] Targeted unit tests for complex business logic
-- [ ] WebSocket collaboration tests
 - [ ] Subscription webhook tests with Stripe mocks
+- [ ] Admin API tests
 
 ### Frontend
 - [ ] DiagramList component tests
@@ -218,11 +227,12 @@ npm test -- AuthModal.test.tsx
 ## Test Metrics
 
 Current test coverage:
-- **Backend E2E**: 35 tests passing
+- **Backend E2E**: 53 tests passing
   - Authentication: 15 tests
   - Diagrams: 19 tests
+  - WebSocket Collaboration: 18 tests
   - Health check: 1 test
-- **Frontend**: Example tests created, ready for expansion
+- **Frontend**: Example tests created (AuthModal component), ready for expansion
 
 Target coverage:
 - **Backend**: 80%+ for critical paths
