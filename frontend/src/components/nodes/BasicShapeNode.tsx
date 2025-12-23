@@ -161,7 +161,7 @@ export function BasicShapeNode({ id, data }: BasicShapeNodeProps) {
                 borderRadius: '4px',
                 color: 'white',
                 textAlign: 'center',
-                width: '100%',
+                width: '80px',
                 padding: '4px',
                 fontSize: 'inherit',
               }}
@@ -191,7 +191,7 @@ export function BasicShapeNode({ id, data }: BasicShapeNodeProps) {
               borderRadius: '4px',
               color: 'white',
               textAlign: 'center',
-              width: '100%',
+              width: '80px',
               padding: '4px',
               fontSize: 'inherit',
             }}
