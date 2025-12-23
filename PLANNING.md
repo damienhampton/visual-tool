@@ -338,22 +338,79 @@ Stored in `DiagramVersion.data`:
   - [x] Authentication UI (login/register/guest)
   - [x] Auto-save diagrams with debouncing
 
-### Phase 3: Enhanced Diagramming
+### Phase 3: Subscriptions & Payments (PRIORITY)
+
+#### Payment Provider: Stripe
+- **Why Stripe**: Best developer experience, comprehensive subscription features, excellent TypeScript/NestJS support
+- **Pricing**: 2.9% + $0.30 per transaction, no monthly fees
+- **Key Features**: Recurring billing, customer portal, webhooks, test mode, PCI compliance
+
+#### Subscription Tiers
+**Free Tier**
+- 3 diagrams maximum
+- Guest collaboration (view-only)
+- Basic export (PNG)
+- Community support
+
+**Pro Tier** ($9/month)
+- Unlimited diagrams
+- Unlimited collaborators
+- Real-time collaboration
+- Version history (30 days)
+- Priority support
+- Advanced exports (SVG, JSON)
+
+**Team Tier** ($29/month)
+- Everything in Pro
+- Team workspaces
+- Admin controls
+- Version history (unlimited)
+- API access
+- SSO (future)
+
+#### Tasks
+- [ ] Backend integration
+  - [ ] Install Stripe SDK and NestJS Stripe module
+  - [ ] Create subscription entity and migrations
+  - [ ] Implement Stripe webhook handlers (payment success, failure, cancellation)
+  - [ ] Add subscription status checks to diagram endpoints
+  - [ ] Create subscription management endpoints (create, cancel, update)
+  - [ ] Implement usage limits (diagram count, collaborator limits)
+- [ ] Frontend integration
+  - [ ] Create pricing page component
+  - [ ] Integrate Stripe Checkout
+  - [ ] Build subscription management UI
+  - [ ] Add upgrade prompts when limits reached
+  - [ ] Display current plan and usage
+  - [ ] Implement billing portal link
+- [ ] Business logic
+  - [ ] Enforce free tier limits (3 diagrams)
+  - [ ] Handle subscription lifecycle (trial, active, past_due, canceled)
+  - [ ] Implement grace periods for failed payments
+  - [ ] Add promo code support
+  - [ ] Create admin dashboard for subscription metrics
+
+#### Alternative Considered
+- **Paddle**: Merchant of Record model, handles tax compliance, but higher fees (5% + payment fees) and less flexible
+
+### Phase 4: Enhanced Diagramming
 - [ ] Connect shapes with edges/arrows (basic connection exists, enhance with labels)
 - [ ] Snap-to-grid
 - [ ] Object colour customization
 - [ ] Grouping elements
 - [ ] Auto-layout options
-- [ ] Multiple diagrams (list/select in UI)
 - [ ] Diagram search and filtering
+- [ ] Export to PNG/SVG
 - [ ] Export to JSON/YAML
 - [ ] Import from JSON/YAML
 
-### Phase 4: Advanced Features
+### Phase 5: Advanced Features
 - [ ] Detailed object types (AWS resources, etc.)
 - [ ] Drill-down navigation between C4 levels
 - [ ] Side-by-side views
-- [ ] Templates
+- [ ] Templates library
 - [ ] Diagram history/version control UI
 - [ ] Comments and annotations
 - [ ] Git integration
+- [ ] Team workspaces
+- [ ] SSO integration
