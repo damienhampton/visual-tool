@@ -620,27 +620,27 @@ Stored in `DiagramVersion.data`:
   - [ ] Update docker-compose.yml with Redis service
   - [ ] Test multi-instance deployment with load balancer
 
-- [ ] **Database Index Optimization**
-  - [ ] Create migration for user table indexes
-    - [ ] Add index on `created_at`
-    - [ ] Add index on `updated_at`
-    - [ ] Add index on `email` (if not already unique indexed)
-  - [ ] Create migration for diagram table indexes
-    - [ ] Add index on `created_at`
-    - [ ] Add index on `owner_id`
-    - [ ] Add composite index on `owner_id, created_at`
-  - [ ] Create migration for subscription table indexes
-    - [ ] Add index on `status`
-    - [ ] Add index on `tier`
-    - [ ] Add index on `user_id` (if not already indexed)
-    - [ ] Add composite index on `status, tier`
-  - [ ] Create migration for diagram_version table indexes
-    - [ ] Add index on `diagram_id`
-    - [ ] Add composite index on `diagram_id, version`
-  - [ ] Create migration for diagram_collaborator table indexes
-    - [ ] Add index on `diagram_id`
-    - [ ] Add index on `user_id`
-    - [ ] Add composite index on `diagram_id, user_id`
+- [x] **Database Index Optimization**
+  - [x] Create migration for user table indexes
+    - [x] Add index on `created_at`
+    - [x] Add index on `updated_at`
+    - [x] Add index on `email` (already unique indexed)
+  - [x] Create migration for diagram table indexes
+    - [x] Add index on `created_at`
+    - [x] Add index on `owner_id`
+    - [x] Add composite index on `owner_id, created_at`
+  - [x] Create migration for subscription table indexes
+    - [x] Add index on `status`
+    - [x] Add index on `tier`
+    - [x] Add index on `user_id`
+    - [x] Add composite index on `status, tier`
+  - [x] Create migration for diagram_version table indexes
+    - [x] Add index on `diagram_id`
+    - [x] Add composite index on `diagram_id, version`
+  - [x] Create migration for diagram_collaborator table indexes
+    - [x] Add index on `diagram_id`
+    - [x] Add index on `user_id`
+    - [x] Add composite index on `diagram_id, user_id`
   - [ ] Run performance tests before/after
 
 - [ ] **Fix N+1 Queries in Admin Service**
