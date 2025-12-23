@@ -393,7 +393,192 @@ Stored in `DiagramVersion.data`:
 #### Alternative Considered
 - **Paddle**: Merchant of Record model, handles tax compliance, but higher fees (5% + payment fees) and less flexible
 
-### Phase 4: Enhanced Diagramming
+### Phase 4: Admin System & Analytics (PRIORITY)
+
+#### Architecture Decision: Same Backend with Admin Module
+**Why:** Shared database access, code reuse, simpler deployment, real-time data, cost-effective
+
+**Structure:**
+- Backend: Add admin module to existing NestJS backend
+- Frontend: Separate React admin app (admin.yourdomain.com)
+- Security: Role-based access control with AdminGuard
+- Database: Reuse existing entities and services
+
+#### Core Features
+
+**1. Dashboard & Real-time Analytics**
+- User metrics (total, active today/week, growth rate)
+- Subscription metrics (free vs paid, MRR, churn rate)
+- Diagram statistics (total, created today, average per user)
+- Revenue charts (daily, weekly, monthly trends)
+- Top users by activity
+- Recent signups and upgrades
+
+**2. User Management**
+- View all users (paginated, searchable, filterable)
+- User details (email, name, signup date, last active, diagrams count)
+- Manual subscription override (grant Pro/Team for support/testing)
+- Ban/unban users
+- Impersonate user (view app as user for support)
+- Reset user password
+- Delete user account (with confirmation)
+- Export user list to CSV
+
+**3. Subscription Management**
+- View all subscriptions (filter by tier, status, date range)
+- Subscription details (Stripe customer ID, payment history, invoices)
+- Manual tier changes (upgrade/downgrade without payment)
+- Cancel subscription with reason tracking
+- Refund payment (via Stripe API)
+- View failed payments and retry history
+- Generate and manage promo codes
+- Subscription lifecycle reports
+
+**4. Diagram Management**
+- Browse all diagrams (with thumbnails/previews)
+- Search diagrams by title, owner, or content
+- View diagram details (nodes, edges, collaborators)
+- Delete inappropriate/spam diagrams
+- Export diagram data (JSON)
+- View collaboration activity and history
+- Diagram usage analytics
+
+**5. Reports & Exports**
+- User growth report (signups over time)
+- Revenue report (MRR, ARR, churn)
+- Subscription conversion funnel
+- Diagram creation trends
+- Collaboration activity report
+- Custom date range filtering
+- CSV/Excel export for all reports
+
+**6. System Health & Monitoring**
+- Database connection status
+- API response times and latency
+- Recent error logs with stack traces
+- Stripe webhook delivery status
+- Background job queue status
+- Server resource usage (CPU, memory)
+
+#### Backend Tasks
+- [ ] Add `isAdmin` boolean field to User entity
+- [ ] Create database migration for admin field
+- [ ] Create AdminGuard for role-based access control
+- [ ] Create AdminModule with controller and service
+- [ ] Implement dashboard stats endpoints
+  - [ ] User statistics (count, growth, active users)
+  - [ ] Subscription metrics (MRR, churn, conversions)
+  - [ ] Diagram statistics (total, growth, per user)
+  - [ ] Revenue analytics (daily, weekly, monthly)
+- [ ] Implement user management endpoints
+  - [ ] List users (paginated, searchable, filterable)
+  - [ ] Get user details with related data
+  - [ ] Update user (email, name, admin status)
+  - [ ] Delete user (cascade delete related data)
+  - [ ] Ban/unban user
+  - [ ] Manual subscription override
+- [ ] Implement subscription management endpoints
+  - [ ] List subscriptions with filters
+  - [ ] Get subscription details with Stripe data
+  - [ ] Manual tier change (bypass Stripe)
+  - [ ] Cancel subscription
+  - [ ] Refund via Stripe API
+- [ ] Implement diagram management endpoints
+  - [ ] List diagrams with pagination and search
+  - [ ] Get diagram details
+  - [ ] Delete diagram
+  - [ ] Export diagram data
+- [ ] Implement reports endpoints
+  - [ ] User growth report
+  - [ ] Revenue report
+  - [ ] Subscription lifecycle report
+  - [ ] CSV export functionality
+- [ ] Add audit logging for admin actions
+  - [ ] Create AuditLog entity
+  - [ ] Log all admin actions (who, what, when)
+  - [ ] Audit log viewer endpoint
+- [ ] Add rate limiting to admin endpoints
+- [ ] Add admin-specific error handling
+
+#### Frontend Tasks
+- [ ] Set up separate admin React app
+  - [ ] Initialize React + TypeScript + Vite
+  - [ ] Configure TailwindCSS
+  - [ ] Set up React Router
+  - [ ] Configure API client
+- [ ] Create admin authentication
+  - [ ] Admin login page
+  - [ ] Admin auth context
+  - [ ] Protected routes
+- [ ] Build dashboard page
+  - [ ] Real-time stats cards (users, subscriptions, revenue)
+  - [ ] Revenue chart (line/bar chart)
+  - [ ] User growth chart
+  - [ ] Recent activity feed
+  - [ ] Quick actions panel
+- [ ] Build user management UI
+  - [ ] User list table (sortable, filterable)
+  - [ ] User search and filters
+  - [ ] User detail modal/page
+  - [ ] Edit user form
+  - [ ] Delete user confirmation
+  - [ ] Ban/unban actions
+  - [ ] Manual subscription override form
+- [ ] Build subscription management UI
+  - [ ] Subscription list table
+  - [ ] Subscription filters (tier, status, date)
+  - [ ] Subscription detail view with Stripe data
+  - [ ] Manual tier change form
+  - [ ] Cancel subscription dialog
+  - [ ] Refund payment form
+- [ ] Build diagram management UI
+  - [ ] Diagram browser with thumbnails
+  - [ ] Diagram search and filters
+  - [ ] Diagram detail view
+  - [ ] Delete diagram confirmation
+  - [ ] Export diagram data button
+- [ ] Build reports page
+  - [ ] Report selector (dropdown)
+  - [ ] Date range picker
+  - [ ] Report visualization (charts/tables)
+  - [ ] CSV export button
+  - [ ] Print/PDF export
+- [ ] Build system health page
+  - [ ] Status indicators
+  - [ ] Error log viewer
+  - [ ] Webhook status
+  - [ ] Performance metrics
+- [ ] Build audit log viewer
+  - [ ] Audit log table
+  - [ ] Filter by user, action, date
+  - [ ] Detail view for each action
+- [ ] Implement admin navigation and layout
+  - [ ] Sidebar navigation
+  - [ ] Header with user info
+  - [ ] Breadcrumbs
+  - [ ] Responsive design
+
+#### Security & Deployment
+- [ ] Configure admin subdomain (admin.yourdomain.com)
+- [ ] Set up admin authentication flow with JWT
+- [ ] Add first admin user to seed data
+- [ ] Configure CORS for admin app
+- [ ] Add admin-specific environment variables
+- [ ] Set up separate deployment for admin frontend
+- [ ] Add IP whitelist for admin access (optional)
+- [ ] Implement two-factor authentication for admins (optional)
+- [ ] Set up admin session timeout (shorter than regular users)
+
+#### Technology Stack
+- **Backend**: NestJS admin module (same backend)
+- **Frontend**: React + TypeScript + Vite
+- **UI**: TailwindCSS + Headless UI
+- **Charts**: Recharts or Chart.js
+- **Tables**: TanStack Table (React Table v8)
+- **State Management**: React Query
+- **Forms**: React Hook Form + Zod validation
+
+### Phase 5: Enhanced Diagramming
 - [ ] Connect shapes with edges/arrows (basic connection exists, enhance with labels)
 - [ ] Snap-to-grid
 - [ ] Object colour customization
@@ -404,7 +589,7 @@ Stored in `DiagramVersion.data`:
 - [ ] Export to JSON/YAML
 - [ ] Import from JSON/YAML
 
-### Phase 5: Advanced Features
+### Phase 6: Advanced Features
 - [ ] Detailed object types (AWS resources, etc.)
 - [ ] Drill-down navigation between C4 levels
 - [ ] Side-by-side views
