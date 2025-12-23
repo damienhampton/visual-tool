@@ -36,19 +36,21 @@ export class Subscription {
   @Index()
   userId: string;
 
-  @ManyToOne(() => User, { createForeignKeyConstraints: false })
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column({
-    type: 'varchar',
+    type: 'enum',
+    enum: SubscriptionTier,
     default: SubscriptionTier.FREE,
   })
   @Index()
   tier: SubscriptionTier;
 
   @Column({
-    type: 'varchar',
+    type: 'enum',
+    enum: SubscriptionStatus,
     default: SubscriptionStatus.ACTIVE,
   })
   @Index()
@@ -63,22 +65,22 @@ export class Subscription {
   @Column({ nullable: true })
   stripePriceId: string;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   currentPeriodStart: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   currentPeriodEnd: Date;
 
   @Column({ type: 'boolean', default: false })
   cancelAtPeriodEnd: boolean;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   canceledAt: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   trialStart: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   trialEnd: Date;
 
   @CreateDateColumn()

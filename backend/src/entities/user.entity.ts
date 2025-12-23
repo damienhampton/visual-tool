@@ -30,7 +30,7 @@ export class User {
   @Column({ default: false })
   isAdmin: boolean;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   lastActiveAt: Date;
 
   @CreateDateColumn()

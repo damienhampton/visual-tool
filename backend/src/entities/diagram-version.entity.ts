@@ -56,7 +56,7 @@ export class DiagramVersion {
   @Column()
   version: number;
 
-  @Column({ type: 'simple-json' })
+  @Column({ type: 'jsonb' })
   data: DiagramData;
 
   @Column({ name: 'created_by' })

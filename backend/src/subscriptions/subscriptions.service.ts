@@ -36,20 +36,15 @@ export class SubscriptionsService {
     });
 
     if (!subscription) {
-      // Use raw SQL to insert subscription (workaround for TypeORM relationship issue in tests)
-      const crypto = require('crypto');
-      const id = crypto.randomUUID();
-      
-      // Direct SQL insert with explicit parameters
-      await this.subscriptionRepository.manager.query(
-        `INSERT INTO subscriptions (id, userId, tier, status, cancelAtPeriodEnd, createdAt, updatedAt) 
-         VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
-        [id, userId, SubscriptionTier.FREE, SubscriptionStatus.ACTIVE, 0]
-      );
-      
-      subscription = await this.subscriptionRepository.findOne({
-        where: { id },
+      // Create new subscription using TypeORM (works properly with PostgreSQL)
+      subscription = this.subscriptionRepository.create({
+        userId,
+        tier: SubscriptionTier.FREE,
+        status: SubscriptionStatus.ACTIVE,
+        cancelAtPeriodEnd: false,
       });
+      
+      subscription = await this.subscriptionRepository.save(subscription);
     }
 
     return subscription;

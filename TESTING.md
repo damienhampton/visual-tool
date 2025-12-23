@@ -15,12 +15,15 @@ We follow a pragmatic testing approach that provides value without creating main
 ### Test Infrastructure
 
 - **Framework**: Jest + Supertest
-- **Database**: SQLite in-memory for test isolation
+- **Database**: PostgreSQL (tmpfs-backed for speed) for test isolation
 - **Location**: `backend/test/`
 
 ### Running Backend Tests
 
 ```bash
+# Start the test database (from project root)
+docker-compose up -d postgres-test
+
 cd backend
 
 # Run all E2E tests
@@ -98,12 +101,14 @@ Helper functions for common test operations:
 - Foreign key constraints properly handled
 - No test pollution between runs
 
-### Database Compatibility
+### Database Configuration
 
-Entities have been updated for cross-database compatibility:
-- `jsonb` → `simple-json` (works on both PostgreSQL and SQLite)
-- `enum` → `varchar` (works on both PostgreSQL and SQLite)
-- `timestamp` → `datetime` (works on both PostgreSQL and SQLite)
+Tests use a dedicated PostgreSQL database that matches production:
+- **Host**: localhost:5433 (configured in docker-compose.yml)
+- **Storage**: tmpfs (RAM-based for speed)
+- **Isolation**: `dropSchema: true` ensures clean state for each test run
+- **Types**: Native PostgreSQL types (jsonb, enum, timestamp)
+- **Benefits**: Perfect production parity, no TypeORM compatibility issues
 
 ## Frontend Testing
 
@@ -242,25 +247,16 @@ npm test -- AuthModal.test.tsx
 ## Test Metrics
 
 Current test coverage:
-- **Backend E2E**: 85 of 103 tests passing (82.5%)
+- **Backend E2E**: 103/103 tests passing (100%) ✅
   - Authentication: 15/15 tests ✅
   - Diagrams: 19/19 tests ✅
   - WebSocket Collaboration: 18/18 tests ✅
-  - Subscriptions: 6/13 tests (partial - TypeORM/SQLite compatibility issues)
-  - Admin Operations: 26/37 tests (partial - subscription-related tests affected by same TypeORM issue)
+  - Subscriptions: 13/13 tests ✅
+  - Admin Operations: 37/37 tests ✅
   - Health check: 1/1 test ✅
 - **Frontend**: Example tests created (AuthModal component), ready for expansion
 
 Target coverage:
-- **Backend**: 80%+ for critical paths ✅ (currently 82.5%)
+- **Backend**: 80%+ for critical paths ✅ (currently 100%)
 - **Frontend**: 70%+ for components and hooks
-- **E2E**: All critical user flows covered
-
-### Known Issues
-
-**TypeORM/SQLite Subscription Entity Issue**
-- The `Subscription` entity has a `@ManyToOne` relationship with `User` that causes TypeORM to set `userId` to NULL when creating subscriptions in SQLite tests
-- This affects 7 subscription tests and 11 admin tests that depend on subscription creation
-- Workaround attempted: Raw SQL insertion, but the issue persists
-- Impact: Tests for subscription endpoints and admin subscription management are partially failing
-- Production use with PostgreSQL is unaffected
+- **E2E**: All critical user flows covered ✅

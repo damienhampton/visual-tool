@@ -29,7 +29,7 @@ export class AuditLog {
   @Column({ nullable: true })
   targetId: string;
 
-  @Column('simple-json', { nullable: true })
+  @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
   @CreateDateColumn()

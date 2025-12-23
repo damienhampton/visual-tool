@@ -128,17 +128,18 @@ export class TestHelper {
 
 export async function cleanDatabase(app: INestApplication): Promise<void> {
   const dataSource = app.get(DataSource);
-  
-  // Disable foreign key checks for SQLite
-  await dataSource.query('PRAGMA foreign_keys = OFF;');
-  
   const entities = dataSource.entityMetadatas;
 
+  // For PostgreSQL, we need to truncate tables in reverse order to handle foreign keys
+  // Or use CASCADE to automatically handle foreign key constraints
   for (const entity of entities) {
-    const repository = dataSource.getRepository(entity.name);
-    await repository.clear();
+    const tableName = entity.tableName;
+    try {
+      await dataSource.query(`TRUNCATE TABLE "${tableName}" CASCADE;`);
+    } catch (error) {
+      // If truncate fails, fall back to delete
+      const repository = dataSource.getRepository(entity.name);
+      await repository.clear();
+    }
   }
-  
-  // Re-enable foreign key checks
-  await dataSource.query('PRAGMA foreign_keys = ON;');
 }
