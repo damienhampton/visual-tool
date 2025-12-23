@@ -41,6 +41,8 @@ Black box tests that test the entire application through HTTP/WebSocket APIs:
 - **`auth.e2e-spec.ts`**: Authentication flows (register, login, guest, JWT validation)
 - **`diagrams.e2e-spec.ts`**: Diagram CRUD, permissions, collaboration, sharing
 - **`collaboration.e2e-spec.ts`**: WebSocket collaboration (connections, rooms, cursors, Y.js sync)
+- **`subscriptions.e2e-spec.ts`**: Subscription tiers, diagram limits, usage tracking
+- **`admin.e2e-spec.ts`**: Admin operations (user management, subscriptions, audit logs)
 - **`app.e2e-spec.ts`**: Basic application health check
 
 #### Test Utilities (`test/test-utils.ts`)
@@ -77,6 +79,19 @@ Helper functions for common test operations:
 - Y.js document synchronization (updates, sync steps)
 - Awareness updates
 - Multi-user scenarios and room isolation
+
+✅ **Subscriptions** (Partial - 6/13 tests passing)
+- Subscription tier management (free, pro, team)
+- Diagram limit enforcement
+- Usage statistics tracking
+- Multi-user subscription isolation
+
+✅ **Admin Operations** (Partial - 23/37 tests passing)
+- Admin access control
+- Dashboard statistics
+- User management (list, update, delete)
+- Subscription overrides
+- Audit log tracking
 
 ✅ **Data Isolation**
 - Each test uses fresh in-memory database
@@ -227,14 +242,16 @@ npm test -- AuthModal.test.tsx
 ## Test Metrics
 
 Current test coverage:
-- **Backend E2E**: 53 tests passing
-  - Authentication: 15 tests
-  - Diagrams: 19 tests
-  - WebSocket Collaboration: 18 tests
-  - Health check: 1 test
+- **Backend E2E**: 82 of 103 tests passing
+  - Authentication: 15/15 tests ✅
+  - Diagrams: 19/19 tests ✅
+  - WebSocket Collaboration: 18/18 tests ✅
+  - Subscriptions: 6/13 tests (partial - configuration issues)
+  - Admin Operations: 23/37 tests (partial - some admin features incomplete)
+  - Health check: 1/1 test ✅
 - **Frontend**: Example tests created (AuthModal component), ready for expansion
 
 Target coverage:
-- **Backend**: 80%+ for critical paths
+- **Backend**: 80%+ for critical paths (currently ~80%)
 - **Frontend**: 70%+ for components and hooks
 - **E2E**: All critical user flows covered

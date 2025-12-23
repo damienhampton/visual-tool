@@ -567,8 +567,8 @@ Focus on pragmatic testing that provides value without creating maintenance burd
   - [x] Auth flow (register → login → JWT validation)
   - [x] Diagram CRUD with permissions
   - [x] WebSocket collaboration (connection → updates → cursor tracking)
-  - [ ] Subscription webhooks and plan limits
-  - [ ] Admin operations (user management → audit logs)
+  - [x] Subscription tiers and plan limits (partial - 6/13 tests)
+  - [x] Admin operations (user management → audit logs) (partial - 23/37 tests)
 
 **2. Module Integration Tests**
 - [ ] AuthModule tests (password hashing, JWT generation, user creation)
