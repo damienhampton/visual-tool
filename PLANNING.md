@@ -561,7 +561,191 @@ Stored in `DiagramVersion.data`:
 - [ ] Export to JSON/YAML
 - [ ] Import from JSON/YAML
 
-### Phase 6: Advanced Features
+### Phase 6: Scalability & Performance Optimization
+
+#### Scalability Assessment (Dec 2024)
+
+**Current Capacity:**
+- ~100-200 concurrent users
+- ~10,000 total users
+- ~50,000 diagrams
+- Admin dashboard breaks at 1,000 users
+- ❌ Cannot scale horizontally (in-memory WebSocket state)
+
+**Target Capacity (with fixes):**
+- 10,000+ concurrent users
+- Millions of total users
+- Millions of diagrams
+- Admin dashboard works at 100,000+ users
+- ✅ Horizontal scaling enabled
+
+#### Critical Issues (Fix before 1,000 users)
+
+**1. WebSocket State Management**
+- **Problem**: In-memory room state prevents horizontal scaling
+- **Location**: `backend/src/collaboration/collaboration.service.ts:19`
+- **Impact**: Cannot run multiple backend instances
+- **Solution**: Implement Redis adapter for Socket.io
+
+**2. Database Indexes**
+- **Problem**: Missing indexes on frequently queried columns
+- **Impact**: Queries slow down exponentially with growth
+- **Solution**: Add indexes on:
+  - `user.createdAt`, `user.updatedAt`
+  - `diagram.createdAt`, `diagram.ownerId`
+  - `subscription.status`, `subscription.tier`, `subscription.userId`
+  - `diagram_version.diagramId`, `diagram_version.version`
+  - `diagram_collaborator.diagramId`, `diagram_collaborator.userId`
+
+**3. N+1 Query Patterns**
+- **Problem**: Admin dashboard loads all users with relations into memory
+- **Location**: `backend/src/admin/admin.service.ts:163-166`
+- **Impact**: Admin dashboard unusable at moderate scale
+- **Solution**: Use database aggregation and proper pagination
+
+**4. TypeORM Synchronize**
+- **Problem**: `synchronize: true` in production risks data loss
+- **Location**: `backend/src/app.module.ts:33`
+- **Impact**: Schema changes happen automatically, potential downtime
+- **Solution**: Disable synchronize, implement proper migrations
+
+#### Tasks - Priority 1 (Before 1,000 users)
+
+- [ ] **Redis Integration for WebSockets**
+  - [ ] Install `@socket.io/redis-adapter` and `redis` packages
+  - [ ] Set up Redis connection in NestJS
+  - [ ] Configure Socket.io Redis adapter in collaboration gateway
+  - [ ] Update collaboration service to use Redis for room state
+  - [ ] Add Redis health check
+  - [ ] Update docker-compose.yml with Redis service
+  - [ ] Test multi-instance deployment with load balancer
+
+- [ ] **Database Index Optimization**
+  - [ ] Create migration for user table indexes
+    - [ ] Add index on `created_at`
+    - [ ] Add index on `updated_at`
+    - [ ] Add index on `email` (if not already unique indexed)
+  - [ ] Create migration for diagram table indexes
+    - [ ] Add index on `created_at`
+    - [ ] Add index on `owner_id`
+    - [ ] Add composite index on `owner_id, created_at`
+  - [ ] Create migration for subscription table indexes
+    - [ ] Add index on `status`
+    - [ ] Add index on `tier`
+    - [ ] Add index on `user_id` (if not already indexed)
+    - [ ] Add composite index on `status, tier`
+  - [ ] Create migration for diagram_version table indexes
+    - [ ] Add index on `diagram_id`
+    - [ ] Add composite index on `diagram_id, version`
+  - [ ] Create migration for diagram_collaborator table indexes
+    - [ ] Add index on `diagram_id`
+    - [ ] Add index on `user_id`
+    - [ ] Add composite index on `diagram_id, user_id`
+  - [ ] Run performance tests before/after
+
+- [ ] **Fix N+1 Queries in Admin Service**
+  - [ ] Refactor `getTopUsers()` to use database aggregation
+    - [ ] Use query builder with COUNT and GROUP BY
+    - [ ] Remove in-memory sorting
+  - [ ] Refactor `getRevenueChart()` to use database aggregation
+    - [ ] Use query builder with date grouping
+    - [ ] Remove in-memory map processing
+  - [ ] Refactor `getUserGrowthChart()` to use database aggregation
+    - [ ] Use query builder with date grouping
+    - [ ] Remove in-memory map processing
+  - [ ] Add query result caching for dashboard stats
+  - [ ] Add pagination to all unbounded queries
+
+- [ ] **Migration System Setup**
+  - [ ] Disable `synchronize: true` in app.module.ts
+  - [ ] Configure TypeORM migrations in package.json
+  - [ ] Generate initial migration from current schema
+  - [ ] Create migration for all index additions
+  - [ ] Document migration workflow in README
+  - [ ] Add migration check to CI/CD pipeline
+
+#### Tasks - Priority 2 (Before 10,000 users)
+
+- [ ] **Caching Layer**
+  - [ ] Install Redis caching module for NestJS
+  - [ ] Implement cache for dashboard statistics
+    - [ ] Cache user counts (TTL: 5 minutes)
+    - [ ] Cache subscription metrics (TTL: 5 minutes)
+    - [ ] Cache revenue data (TTL: 15 minutes)
+  - [ ] Implement cache invalidation on data changes
+  - [ ] Add cache hit/miss metrics
+
+- [ ] **Database Connection Pooling**
+  - [ ] Configure TypeORM connection pool size
+  - [ ] Set min/max connections based on load testing
+  - [ ] Add connection pool monitoring
+  - [ ] Configure connection timeout settings
+
+- [ ] **Optimize Autosave**
+  - [ ] Implement Yjs persistence provider
+  - [ ] Replace periodic saves with Yjs document snapshots
+  - [ ] Add debouncing for version creation (5 minutes)
+  - [ ] Reduce write contention on diagram updates
+
+- [ ] **Read Replicas**
+  - [ ] Set up PostgreSQL read replica
+  - [ ] Configure TypeORM for read/write splitting
+  - [ ] Route admin queries to read replica
+  - [ ] Route reporting queries to read replica
+  - [ ] Add replica lag monitoring
+
+#### Tasks - Priority 3 (Before 100,000 users)
+
+- [ ] **Separate WebSocket Servers**
+  - [ ] Extract collaboration service to separate NestJS app
+  - [ ] Configure dedicated WebSocket server instances
+  - [ ] Implement sticky sessions for WebSocket connections
+  - [ ] Add WebSocket server health checks
+  - [ ] Load balance WebSocket connections
+
+- [ ] **CDN Integration**
+  - [ ] Configure CDN for static assets
+  - [ ] Add cache headers to frontend build
+  - [ ] Implement asset versioning/fingerprinting
+  - [ ] Add CDN purge on deployments
+
+- [ ] **Database Partitioning**
+  - [ ] Implement table partitioning for diagram_versions
+    - [ ] Partition by created_at (monthly)
+  - [ ] Implement table partitioning for audit_logs
+    - [ ] Partition by created_at (monthly)
+  - [ ] Archive old partitions to cold storage
+
+- [ ] **Monitoring & Observability**
+  - [ ] Set up application performance monitoring (APM)
+  - [ ] Add distributed tracing
+  - [ ] Implement custom metrics dashboard
+  - [ ] Set up alerting for performance degradation
+  - [ ] Add query performance logging
+  - [ ] Monitor Redis memory usage
+  - [ ] Track WebSocket connection counts
+
+#### Performance Testing
+
+- [ ] **Load Testing Setup**
+  - [ ] Install k6 or Artillery for load testing
+  - [ ] Create test scenarios for:
+    - [ ] Concurrent diagram editing
+    - [ ] WebSocket connections
+    - [ ] Admin dashboard queries
+    - [ ] API endpoint throughput
+  - [ ] Establish baseline performance metrics
+  - [ ] Run load tests after each optimization
+  - [ ] Document performance improvements
+
+- [ ] **Benchmarking**
+  - [ ] Measure query performance before/after indexes
+  - [ ] Measure admin dashboard response times
+  - [ ] Measure WebSocket message latency
+  - [ ] Measure autosave throughput
+  - [ ] Document all benchmarks in PERFORMANCE.md
+
+### Phase 7: Advanced Features
 - [ ] Detailed object types (AWS resources, etc.)
 - [ ] Drill-down navigation between C4 levels
 - [ ] Side-by-side views
