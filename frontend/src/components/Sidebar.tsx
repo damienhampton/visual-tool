@@ -61,6 +61,186 @@ export function Sidebar() {
     }
   };
 
+  const renderShapePreview = (type: string, color: string) => {
+    const containerStyle = {
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
+
+    if (activePalette === 'c4') {
+      const c4Type = type as C4NodeType;
+      return (
+        <div style={containerStyle}>
+          <div
+            style={{
+              background: color,
+              width: '80px',
+              height: '60px',
+              borderRadius: c4Type === 'person' ? '50% 50% 8px 8px' : '8px',
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (activePalette === 'basicShapes') {
+      const shapeType = type as BasicShapeType;
+      switch (shapeType) {
+        case 'circle':
+          return (
+            <div style={containerStyle}>
+              <div style={{ background: color, width: '60px', height: '60px', borderRadius: '50%' }} />
+            </div>
+          );
+        case 'triangle':
+          return (
+            <div style={containerStyle}>
+              <div
+                style={{
+                  width: 0,
+                  height: 0,
+                  borderLeft: '30px solid transparent',
+                  borderRight: '30px solid transparent',
+                  borderBottom: `60px solid ${color}`,
+                }}
+              />
+            </div>
+          );
+        case 'diamond':
+          return (
+            <div style={containerStyle}>
+              <div
+                style={{
+                  background: color,
+                  width: '50px',
+                  height: '50px',
+                  transform: 'rotate(45deg)',
+                  borderRadius: '4px',
+                }}
+              />
+            </div>
+          );
+        case 'star':
+          return (
+            <div style={containerStyle}>
+              <div
+                style={{
+                  background: color,
+                  width: '60px',
+                  height: '60px',
+                  clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
+                }}
+              />
+            </div>
+          );
+        case 'hexagon':
+          return (
+            <div style={containerStyle}>
+              <div
+                style={{
+                  background: color,
+                  width: '70px',
+                  height: '60px',
+                  clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
+                }}
+              />
+            </div>
+          );
+        default:
+          return (
+            <div style={containerStyle}>
+              <div style={{ background: color, width: '60px', height: '60px', borderRadius: '8px' }} />
+            </div>
+          );
+      }
+    }
+
+    if (activePalette === 'flowChart') {
+      const flowType = type as FlowChartType;
+      switch (flowType) {
+        case 'start':
+          return (
+            <div style={containerStyle}>
+              <div style={{ background: color, width: '80px', height: '50px', borderRadius: '40px' }} />
+            </div>
+          );
+        case 'process':
+          return (
+            <div style={containerStyle}>
+              <div style={{ background: color, width: '80px', height: '50px', borderRadius: '8px' }} />
+            </div>
+          );
+        case 'decision':
+          return (
+            <div style={containerStyle}>
+              <div
+                style={{
+                  background: color,
+                  width: '50px',
+                  height: '50px',
+                  transform: 'rotate(45deg)',
+                }}
+              />
+            </div>
+          );
+        case 'input':
+          return (
+            <div style={containerStyle}>
+              <div
+                style={{
+                  background: color,
+                  width: '80px',
+                  height: '50px',
+                  clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)',
+                }}
+              />
+            </div>
+          );
+        case 'output':
+          return (
+            <div style={containerStyle}>
+              <div
+                style={{
+                  background: color,
+                  width: '80px',
+                  height: '50px',
+                  clipPath: 'polygon(0% 0%, 90% 0%, 100% 100%, 10% 100%)',
+                }}
+              />
+            </div>
+          );
+        case 'document':
+          return (
+            <div style={containerStyle}>
+              <div
+                style={{
+                  background: color,
+                  width: '70px',
+                  height: '60px',
+                  clipPath: 'polygon(0% 0%, 100% 0%, 100% 85%, 50% 100%, 0% 85%)',
+                }}
+              />
+            </div>
+          );
+        default:
+          return (
+            <div style={containerStyle}>
+              <div style={{ background: color, width: '80px', height: '50px', borderRadius: '8px' }} />
+            </div>
+          );
+      }
+    }
+
+    return (
+      <div style={containerStyle}>
+        <div style={{ background: color, width: '80px', height: '50px', borderRadius: '8px' }} />
+      </div>
+    );
+  };
+
   return (
     <aside className="w-[220px] p-5 bg-gray-100 border-r border-gray-300 flex flex-col gap-2.5">
       <div className="mb-3">
@@ -82,16 +262,20 @@ export function Sidebar() {
         {getPaletteTitle()}
       </h3>
       
-      <div className="flex flex-col gap-2.5 overflow-y-auto">
+      <div className="grid grid-cols-2 gap-2.5 overflow-y-auto">
         {getCurrentElements().map((element) => (
           <div
             key={element.type}
             draggable
             onDragStart={(e) => onDragStart(e, element.type, activePalette)}
-            className="p-3 text-white rounded cursor-grab text-sm text-center font-medium hover:opacity-90 transition-opacity"
-            style={{ background: element.color }}
+            className="cursor-grab hover:opacity-90 transition-opacity"
           >
-            {element.label}
+            <div className="relative h-20 rounded overflow-hidden">
+              {renderShapePreview(element.type, element.color)}
+            </div>
+            <div className="text-xs text-center mt-1 font-medium text-gray-700">
+              {element.label}
+            </div>
           </div>
         ))}
       </div>
