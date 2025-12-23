@@ -847,3 +847,197 @@ Focus on pragmatic testing that provides value without creating maintenance burd
 - [x] Manually upgrade/downgrade users via admin
 - [x] Forgotten password flow
 - [x] Admin app - add/invite new user (with optional welcome email)
+
+### Phase 9: Branding & Domain
+- [ ] **Name Selection**
+  - [ ] Finalize application name
+  - [ ] Check domain availability (.com, .io, .app)
+  - [ ] Purchase domain
+  - [ ] Set up domain DNS
+  - [ ] Configure domain for Render services
+  
+- [ ] **Brand Identity**
+  - [ ] Design logo
+  - [ ] Define color palette
+  - [ ] Create brand guidelines
+  - [ ] Update all apps with branding
+
+**Name Suggestions:**
+
+*Architecture/Structure Focused:*
+- **ArchFlow** - archflow.io
+- **StructDraw** - structdraw.com
+- **DiagramFlow** - diagramflow.io
+- **LayerDiagram** - layerdiagram.com
+- **ArchCanvas** - archcanvas.io
+
+*C4 Model Focused:*
+- **C4Builder** - c4builder.io
+- **C4Flow** - c4flow.io
+- **ContextDiagram** - contextdiagram.com
+- **SystemCanvas** - systemcanvas.io
+
+*Modern/Tech Focused:*
+- **Archify** - archify.io
+- **Structify** - structify.io
+- **Diagramly** - diagramly.io
+- **FlowArch** - flowarch.io
+- **Blueprintly** - blueprintly.io
+
+*Simple/Direct:*
+- **DiagramKit** - diagramkit.io
+- **ArchDraw** - archdraw.io
+- **SystemDraw** - systemdraw.io
+- **FlowCanvas** - flowcanvas.io
+
+*Premium/Professional:*
+- **Architekt** - architekt.io (with k for uniqueness)
+- **Structura** - structura.io
+- **Diagramma** - diagramma.io
+- **Systema** - systema.io
+
+### Phase 10: Marketing & Promo Site
+- [ ] **Marketing Site Development**
+  - [ ] Choose framework (Next.js recommended for SEO)
+  - [ ] Design landing page
+  - [ ] Create features page with screenshots/demos
+  - [ ] Build pricing page (integrate with Stripe pricing)
+  - [ ] Add testimonials section
+  - [ ] Create use cases/examples page
+  - [ ] Add blog/resources section
+  - [ ] Implement contact form
+  - [ ] Set up analytics (Google Analytics, Plausible, or Fathom)
+  
+- [ ] **Content Creation**
+  - [ ] Write compelling copy for landing page
+  - [ ] Create feature descriptions
+  - [ ] Develop use case examples (C4 diagrams, architecture docs)
+  - [ ] Record demo videos
+  - [ ] Take product screenshots
+  - [ ] Write blog posts (SEO content)
+  - [ ] Create comparison content (vs Miro, vs Structurizr)
+  
+- [ ] **SEO & Marketing**
+  - [ ] Keyword research
+  - [ ] Meta tags and descriptions
+  - [ ] Open Graph images
+  - [ ] Sitemap generation
+  - [ ] Submit to search engines
+  - [ ] Set up email capture/newsletter
+  - [ ] Create social media presence
+  
+- [ ] **Technical Setup**
+  - [ ] Deploy marketing site (Vercel recommended)
+  - [ ] Configure custom domain
+  - [ ] Set up SSL certificates
+  - [ ] Implement CDN for assets
+  - [ ] Add cookie consent (GDPR compliance)
+
+**Recommended Stack:**
+- **Framework**: Next.js 14 (App Router) with TypeScript
+- **Styling**: TailwindCSS + shadcn/ui components
+- **Animations**: Framer Motion
+- **Forms**: React Hook Form + Zod validation
+- **Analytics**: Plausible (privacy-focused) or Google Analytics
+- **Hosting**: Vercel (free tier, excellent Next.js support)
+- **CMS** (optional): Contentful, Sanity, or MDX for blog
+
+### Phase 11: Customer Support System
+- [ ] **Support Platform Selection**
+
+**Option A: Off-the-Shelf Solutions (Recommended)**
+
+*All-in-One Platforms:*
+- **Intercom** ($74/mo)
+  - ✅ Live chat, ticketing, knowledge base
+  - ✅ In-app messaging
+  - ✅ Customer data platform
+  - ✅ Automation & bots
+  - ❌ Expensive at scale
+  
+- **Zendesk** ($55-115/mo per agent)
+  - ✅ Comprehensive ticketing system
+  - ✅ Knowledge base
+  - ✅ Live chat (with add-on)
+  - ✅ Industry standard
+  - ❌ Complex setup, expensive
+  
+- **Crisp** ($25/mo)
+  - ✅ Live chat, ticketing, knowledge base
+  - ✅ Shared inbox
+  - ✅ Chatbot
+  - ✅ Affordable
+  - ✅ Good for startups
+  
+- **HelpScout** ($20/mo per user)
+  - ✅ Email-based ticketing
+  - ✅ Knowledge base (Docs)
+  - ✅ Live chat (Beacon)
+  - ✅ Clean, simple interface
+  - ✅ Great for small teams
+
+*Budget-Friendly Options:*
+- **Chatwoot** (Free, self-hosted or $19/mo cloud)
+  - ✅ Open source
+  - ✅ Live chat, ticketing
+  - ✅ Multi-channel (email, social)
+  - ✅ Can self-host on Render
+  - ❌ Less polished than commercial options
+  
+- **Papercups** (Free, open source)
+  - ✅ Live chat
+  - ✅ Slack integration
+  - ✅ Self-hostable
+  - ❌ Smaller community
+  
+- **Tawk.to** (Free)
+  - ✅ Completely free live chat
+  - ✅ Ticketing system
+  - ✅ Knowledge base
+  - ❌ Branding on free tier
+  - ❌ Less feature-rich
+
+**Option B: Self-Built Solution**
+
+*Tech Stack:*
+- **Live Chat**: Socket.io (already in your stack) + React components
+- **Ticketing**: Custom NestJS module with PostgreSQL
+- **Knowledge Base**: MDX files with Next.js or custom CMS
+- **Email Integration**: Resend (already integrated)
+
+*Pros:*
+- ✅ Full control and customization
+- ✅ No monthly fees
+- ✅ Integrated with existing auth/billing
+- ✅ Data ownership
+
+*Cons:*
+- ❌ Significant development time (2-4 weeks)
+- ❌ Ongoing maintenance burden
+- ❌ Missing advanced features (automation, analytics)
+- ❌ Not core product focus
+
+**Recommendation:**
+- **Start with Crisp** ($25/mo) or **Chatwoot** (self-hosted on Render)
+  - Quick to implement (1-2 days)
+  - Affordable
+  - All essential features
+  - Can migrate to Intercom/Zendesk later if needed
+  
+- **For Knowledge Base**: Consider separate solution
+  - **GitBook** (Free for open source, $6.70/user/mo)
+  - **Docusaurus** (Free, self-hosted)
+  - **Mintlify** (Free tier available)
+  - **Custom Next.js + MDX** (full control)
+
+- [ ] **Implementation Tasks**
+  - [ ] Choose support platform
+  - [ ] Set up live chat widget in frontend
+  - [ ] Configure ticketing system
+  - [ ] Create knowledge base structure
+  - [ ] Write initial help articles
+  - [ ] Set up support email forwarding
+  - [ ] Train support team (if applicable)
+  - [ ] Create internal support documentation
+  - [ ] Set up support metrics/KPIs
+  - [ ] Implement customer satisfaction surveys
