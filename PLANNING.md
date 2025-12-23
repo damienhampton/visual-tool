@@ -338,7 +338,7 @@ Stored in `DiagramVersion.data`:
   - [x] Authentication UI (login/register/guest)
   - [x] Auto-save diagrams with debouncing
 
-### Phase 3: Subscriptions & Payments (PRIORITY)
+### Phase 3: Subscriptions & Payments ✅ COMPLETE
 
 #### Payment Provider: Stripe
 - **Why Stripe**: Best developer experience, comprehensive subscription features, excellent TypeScript/NestJS support
@@ -369,26 +369,26 @@ Stored in `DiagramVersion.data`:
 - SSO (future)
 
 #### Tasks
-- [ ] Backend integration
-  - [ ] Install Stripe SDK and NestJS Stripe module
-  - [ ] Create subscription entity and migrations
-  - [ ] Implement Stripe webhook handlers (payment success, failure, cancellation)
-  - [ ] Add subscription status checks to diagram endpoints
-  - [ ] Create subscription management endpoints (create, cancel, update)
-  - [ ] Implement usage limits (diagram count, collaborator limits)
-- [ ] Frontend integration
-  - [ ] Create pricing page component
-  - [ ] Integrate Stripe Checkout
-  - [ ] Build subscription management UI
-  - [ ] Add upgrade prompts when limits reached
-  - [ ] Display current plan and usage
-  - [ ] Implement billing portal link
-- [ ] Business logic
-  - [ ] Enforce free tier limits (3 diagrams)
-  - [ ] Handle subscription lifecycle (trial, active, past_due, canceled)
-  - [ ] Implement grace periods for failed payments
-  - [ ] Add promo code support
-  - [ ] Create admin dashboard for subscription metrics
+- [x] Backend integration
+  - [x] Install Stripe SDK and NestJS Stripe module
+  - [x] Create subscription entity and migrations
+  - [x] Implement Stripe webhook handlers (payment success, failure, cancellation)
+  - [x] Add subscription status checks to diagram endpoints
+  - [x] Create subscription management endpoints (create, cancel, update)
+  - [x] Implement usage limits (diagram count, collaborator limits)
+- [x] Frontend integration
+  - [x] Create pricing page component
+  - [x] Integrate Stripe Checkout
+  - [x] Build subscription management UI (subscription banner)
+  - [x] Add upgrade prompts when limits reached
+  - [x] Display current plan and usage
+  - [x] Implement billing portal link
+- [x] Business logic
+  - [x] Enforce free tier limits (3 diagrams)
+  - [x] Handle subscription lifecycle (trial, active, past_due, canceled)
+  - [x] Implement grace periods for failed payments (via webhook handlers)
+  - [ ] Add promo code support (future enhancement)
+  - [ ] Create admin dashboard for subscription metrics (future enhancement)
 
 #### Alternative Considered
 - **Paddle**: Merchant of Record model, handles tax compliance, but higher fees (5% + payment fees) and less flexible
