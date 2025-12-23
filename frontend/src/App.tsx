@@ -157,7 +157,7 @@ function Flow({ diagramId }: FlowProps) {
 
   if (!diagramId) {
     return (
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>
+      <div className="flex-1 flex items-center justify-center text-gray-500">
         Select or create a diagram to get started
       </div>
     );
@@ -166,41 +166,16 @@ function Flow({ diagramId }: FlowProps) {
   return (
     <div
       ref={reactFlowWrapper}
-      style={{ flex: 1, position: 'relative' }}
+      className="flex-1 relative"
       onMouseMove={handleMouseMove}
     >
       {diagram && (
-        <div style={{
-          position: 'absolute',
-          top: '16px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'white',
-          padding: '8px 16px',
-          borderRadius: '4px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          zIndex: 10,
-          fontSize: '14px',
-          fontWeight: 'bold',
-          color: '#333',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-        }}>
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded shadow-md z-10 text-sm font-semibold text-gray-800 flex items-center gap-3">
           <span>{diagram.title}</span>
           {(diagram.userRole === 'owner' || diagram.userRole === 'editor') && (
             <button
               onClick={() => setShowShareDialog(true)}
-              style={{
-                padding: '4px 12px',
-                background: '#1168bd',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '12px',
-                fontWeight: 'bold',
-              }}
+              className="px-3 py-1 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700 transition-colors"
             >
               Share
             </button>
@@ -279,40 +254,22 @@ function AppContent() {
 
   if (isLoading) {
     return (
-      <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ fontSize: '18px', color: '#999' }}>Loading...</div>
+      <div className="w-screen h-screen flex items-center justify-center">
+        <div className="text-lg text-gray-500">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{
-        height: '60px',
-        background: '#1168bd',
-        color: 'white',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 24px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      }}>
-        <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>C4 Diagram Tool</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+    <div className="w-screen h-screen flex flex-col">
+      <div className="h-[60px] bg-blue-600 text-white flex items-center justify-between px-8 shadow-md">
+        <h1 className="m-0 text-xl font-bold">C4 Diagram Tool</h1>
+        <div className="flex items-center gap-4">
           {user && (
             <>
               <button
                 onClick={() => setShowDiagramList(true)}
-                style={{
-                  padding: '8px 16px',
-                  background: 'rgba(255,255,255,0.2)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                }}
+                className="px-4 py-2 bg-white/20 text-white rounded font-semibold text-sm hover:bg-white/30 transition-colors"
               >
                 My Diagrams
               </button>
@@ -322,7 +279,7 @@ function AppContent() {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex' }}>
+      <div className="flex-1 flex">
         <Sidebar />
         <ReactFlowProvider>
           <Flow diagramId={currentDiagramId} />

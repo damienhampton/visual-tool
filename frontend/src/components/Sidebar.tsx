@@ -15,18 +15,8 @@ export function Sidebar() {
   };
 
   return (
-    <aside
-      style={{
-        width: '200px',
-        padding: '16px',
-        background: '#f5f5f5',
-        borderRight: '1px solid #ddd',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px',
-      }}
-    >
-      <h3 style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#333' }}>
+    <aside className="w-[220px] p-5 bg-gray-100 border-r border-gray-300 flex flex-col gap-2.5">
+      <h3 className="m-0 mb-2 text-sm font-semibold text-gray-800">
         C4 Elements
       </h3>
       {c4Elements.map((element) => (
@@ -34,15 +24,8 @@ export function Sidebar() {
           key={element.type}
           draggable
           onDragStart={(e) => onDragStart(e, element.type)}
-          style={{
-            padding: '12px',
-            background: element.color,
-            color: 'white',
-            borderRadius: '4px',
-            cursor: 'grab',
-            fontSize: '13px',
-            textAlign: 'center',
-          }}
+          className="p-3 text-white rounded cursor-grab text-sm text-center font-medium hover:opacity-90 transition-opacity"
+          style={{ background: element.color }}
         >
           {element.label}
         </div>

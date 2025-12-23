@@ -79,104 +79,51 @@ export function PricingPage({ onClose, currentTier = 'free' }: PricingPageProps)
   ];
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      padding: '20px',
-      overflowY: 'auto',
-    }}>
-      <div style={{
-        background: 'white',
-        borderRadius: '12px',
-        padding: '48px',
-        maxWidth: '1200px',
-        width: '100%',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <h1 style={{ margin: '0 0 16px 0', fontSize: '36px', color: '#333' }}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-5 overflow-y-auto">
+      <div className="bg-white rounded-xl p-12 max-w-[1200px] w-full max-h-[90vh] overflow-y-auto">
+        <div className="text-center mb-12">
+          <h1 className="m-0 mb-4 text-4xl font-bold text-gray-800">
             Choose Your Plan
           </h1>
-          <p style={{ margin: 0, fontSize: '18px', color: '#666' }}>
+          <p className="m-0 text-lg text-gray-600">
             Upgrade to unlock unlimited diagrams and advanced features
           </p>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '32px',
-          marginBottom: '32px',
-        }}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8 mb-8">
           {tiers.map((tier) => (
             <div
               key={tier.tier}
-              style={{
-                border: tier.popular ? '2px solid #1168bd' : '1px solid #ddd',
-                borderRadius: '12px',
-                padding: '32px',
-                position: 'relative',
-                background: tier.popular ? '#f8fbff' : 'white',
-              }}
+              className={`rounded-xl p-8 relative ${
+                tier.popular ? 'border-2 border-blue-600 bg-blue-50/30' : 'border border-gray-300 bg-white'
+              }`}
             >
               {tier.popular && (
-                <div style={{
-                  position: 'absolute',
-                  top: '-12px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: '#1168bd',
-                  color: 'white',
-                  padding: '4px 16px',
-                  borderRadius: '12px',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                }}>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-xl text-xs font-bold">
                   MOST POPULAR
                 </div>
               )}
 
-              <h3 style={{ margin: '0 0 8px 0', fontSize: '24px', color: '#333' }}>
+              <h3 className="m-0 mb-2 text-2xl font-bold text-gray-800">
                 {tier.name}
               </h3>
 
-              <div style={{ marginBottom: '24px' }}>
-                <span style={{ fontSize: '48px', fontWeight: 'bold', color: '#1168bd' }}>
+              <div className="mb-6">
+                <span className="text-5xl font-bold text-blue-600">
                   {tier.price}
                 </span>
-                <span style={{ fontSize: '16px', color: '#666', marginLeft: '8px' }}>
+                <span className="text-base text-gray-600 ml-2">
                   {tier.period}
                 </span>
               </div>
 
-              <ul style={{
-                listStyle: 'none',
-                padding: 0,
-                margin: '0 0 32px 0',
-              }}>
+              <ul className="list-none p-0 m-0 mb-8">
                 {tier.features.map((feature, index) => (
                   <li
                     key={index}
-                    style={{
-                      padding: '12px 0',
-                      borderBottom: '1px solid #eee',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      fontSize: '14px',
-                      color: '#555',
-                    }}
+                    className="py-3 border-b border-gray-200 flex items-center gap-2 text-sm text-gray-700"
                   >
-                    <span style={{ color: '#4caf50', fontSize: '18px' }}>✓</span>
+                    <span className="text-green-600 text-lg">✓</span>
                     {feature}
                   </li>
                 ))}
@@ -185,18 +132,13 @@ export function PricingPage({ onClose, currentTier = 'free' }: PricingPageProps)
               <button
                 onClick={() => !tier.disabled && tier.tier !== 'free' && handleSubscribe(tier.tier as 'pro' | 'team')}
                 disabled={tier.disabled || currentTier === tier.tier || loading !== null}
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  background: tier.disabled || currentTier === tier.tier ? '#e0e0e0' : tier.popular ? '#1168bd' : '#333',
-                  color: tier.disabled || currentTier === tier.tier ? '#999' : 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  cursor: tier.disabled || currentTier === tier.tier || loading !== null ? 'not-allowed' : 'pointer',
-                  opacity: loading === tier.tier ? 0.7 : 1,
-                }}
+                className={`w-full py-4 rounded-lg text-base font-semibold transition-colors ${
+                  tier.disabled || currentTier === tier.tier
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : tier.popular
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-gray-800 text-white hover:bg-gray-900'
+                } ${loading === tier.tier ? 'opacity-70' : ''}`}
               >
                 {loading === tier.tier ? 'Loading...' : currentTier === tier.tier ? 'Current Plan' : tier.cta}
               </button>
@@ -204,34 +146,20 @@ export function PricingPage({ onClose, currentTier = 'free' }: PricingPageProps)
           ))}
         </div>
 
-        <div style={{ textAlign: 'center' }}>
+        <div className="text-center">
           <button
             onClick={onClose}
-            style={{
-              padding: '12px 32px',
-              background: '#f5f5f5',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: '16px',
-              cursor: 'pointer',
-            }}
+            className="py-3 px-8 bg-gray-100 rounded-lg text-base hover:bg-gray-200 transition-colors"
           >
             Close
           </button>
         </div>
 
-        <div style={{
-          marginTop: '32px',
-          padding: '24px',
-          background: '#f9f9f9',
-          borderRadius: '8px',
-          fontSize: '14px',
-          color: '#666',
-        }}>
-          <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: '#333' }}>
+        <div className="mt-8 p-6 bg-gray-50 rounded-lg text-sm text-gray-600">
+          <p className="m-0 mb-2 font-semibold text-gray-800">
             💳 Secure Payment
           </p>
-          <p style={{ margin: 0 }}>
+          <p className="m-0">
             All payments are processed securely through Stripe. You can cancel or change your subscription at any time.
           </p>
         </div>

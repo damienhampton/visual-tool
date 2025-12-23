@@ -73,43 +73,15 @@ export function DiagramList({ onSelectDiagram, onClose }: DiagramListProps) {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-    }}>
-      <div style={{
-        background: 'white',
-        borderRadius: '8px',
-        padding: '32px',
-        width: '600px',
-        maxWidth: '90%',
-        maxHeight: '80vh',
-        overflow: 'auto',
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h2 style={{ margin: 0, fontSize: '24px', color: '#333' }}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
+      <div className="bg-white rounded-lg p-8 w-[600px] max-w-[90%] max-h-[80vh] overflow-auto relative">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="m-0 text-2xl font-bold text-gray-800">
             Your Diagrams
           </h2>
           <button
             onClick={() => setShowCreateModal(true)}
-            style={{
-              padding: '8px 16px',
-              background: '#1168bd',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 'bold',
-            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700 transition-colors"
           >
             + New Diagram
           </button>
@@ -118,67 +90,38 @@ export function DiagramList({ onSelectDiagram, onClose }: DiagramListProps) {
         <SubscriptionBanner onUpgradeClick={() => setShowPricing(true)} />
 
         {error && (
-          <div style={{
-            padding: '12px',
-            background: '#fee',
-            color: '#c33',
-            borderRadius: '4px',
-            marginBottom: '16px',
-            fontSize: '14px',
-          }}>
+          <div className="p-3 bg-red-50 text-red-700 rounded mb-4 text-sm">
             {error}
           </div>
         )}
 
         {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+          <div className="text-center py-10 text-gray-500">
             Loading diagrams...
           </div>
         ) : diagrams.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+          <div className="text-center py-10 text-gray-500">
             No diagrams yet. Create your first one!
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div className="flex flex-col gap-3">
             {diagrams.map((diagram) => (
               <div
                 key={diagram.id}
                 onClick={() => onSelectDiagram(diagram.id)}
-                style={{
-                  padding: '16px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#f5f5f5';
-                  e.currentTarget.style.borderColor = '#1168bd';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'white';
-                  e.currentTarget.style.borderColor = '#ddd';
-                }}
+                className="p-4 border border-gray-300 rounded cursor-pointer transition-all flex justify-between items-center hover:bg-gray-50 hover:border-blue-600"
               >
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#333', marginBottom: '4px' }}>
+                  <div className="font-semibold text-base text-gray-800 mb-1">
                     {diagram.title}
                   </div>
-                  <div style={{ fontSize: '12px', color: '#999' }}>
+                  <div className="text-xs text-gray-500">
                     {diagram.userRole && (
-                      <span style={{
-                        display: 'inline-block',
-                        padding: '2px 8px',
-                        background: diagram.userRole === 'owner' ? '#e3f2fd' : diagram.userRole === 'editor' ? '#fff3e0' : '#f3e5f5',
-                        color: diagram.userRole === 'owner' ? '#1976d2' : diagram.userRole === 'editor' ? '#f57c00' : '#7b1fa2',
-                        borderRadius: '4px',
-                        marginRight: '8px',
-                        fontSize: '11px',
-                        fontWeight: 'bold',
-                      }}>
+                      <span className={`inline-block px-2 py-0.5 rounded mr-2 text-[11px] font-semibold ${
+                        diagram.userRole === 'owner' ? 'bg-blue-100 text-blue-700' :
+                        diagram.userRole === 'editor' ? 'bg-orange-100 text-orange-700' :
+                        'bg-purple-100 text-purple-700'
+                      }`}>
                         {diagram.userRole.toUpperCase()}
                       </span>
                     )}
@@ -188,15 +131,7 @@ export function DiagramList({ onSelectDiagram, onClose }: DiagramListProps) {
                 {diagram.userRole === 'owner' && (
                   <button
                     onClick={(e) => handleDeleteDiagram(diagram.id, e)}
-                    style={{
-                      padding: '6px 12px',
-                      background: '#f44336',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                    }}
+                    className="px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors"
                   >
                     Delete
                   </button>
@@ -208,41 +143,15 @@ export function DiagramList({ onSelectDiagram, onClose }: DiagramListProps) {
 
         <button
           onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            background: 'none',
-            border: 'none',
-            fontSize: '24px',
-            cursor: 'pointer',
-            color: '#999',
-          }}
+          className="absolute top-4 right-4 bg-transparent border-none text-2xl cursor-pointer text-gray-400 hover:text-gray-600"
         >
           ×
         </button>
 
         {showCreateModal && (
-          <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1001,
-          }}>
-            <div style={{
-              background: 'white',
-              borderRadius: '8px',
-              padding: '24px',
-              width: '400px',
-              maxWidth: '90%',
-            }}>
-              <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', color: '#333' }}>
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1001]">
+            <div className="bg-white rounded-lg p-6 w-[400px] max-w-[90%]">
+              <h3 className="m-0 mb-4 text-lg font-semibold text-gray-800">
                 Create New Diagram
               </h3>
               <form onSubmit={handleCreateDiagram}>
@@ -252,45 +161,22 @@ export function DiagramList({ onSelectDiagram, onClose }: DiagramListProps) {
                   onChange={(e) => setNewDiagramTitle(e.target.value)}
                   placeholder="Diagram title"
                   autoFocus
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    fontSize: '14px',
-                    marginBottom: '16px',
-                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                <div className="flex gap-2 justify-end">
                   <button
                     type="button"
                     onClick={() => {
                       setShowCreateModal(false);
                       setNewDiagramTitle('');
                     }}
-                    style={{
-                      padding: '8px 16px',
-                      background: '#f5f5f5',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                    }}
+                    className="px-4 py-2 bg-gray-100 rounded text-sm hover:bg-gray-200 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    style={{
-                      padding: '8px 16px',
-                      background: '#1168bd',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: 'bold',
-                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700 transition-colors"
                   >
                     Create
                   </button>

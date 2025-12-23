@@ -58,21 +58,14 @@ export function SubscriptionBanner({ onUpgradeClick }: SubscriptionBannerProps) 
   return (
     <>
       {showBanner && usage.tier === 'free' && (
-        <div style={{
-          background: isAtLimit ? '#fff3e0' : '#e3f2fd',
-          padding: '12px 16px',
-          borderRadius: '8px',
-          marginBottom: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          border: `1px solid ${isAtLimit ? '#ff9800' : '#1168bd'}`,
-        }}>
+        <div className={`p-3 px-4 rounded-lg mb-4 flex items-center justify-between border ${
+          isAtLimit ? 'bg-orange-50 border-orange-500' : 'bg-blue-50 border-blue-600'
+        }`}>
           <div>
-            <strong style={{ color: isAtLimit ? '#e65100' : '#1168bd' }}>
+            <strong className={isAtLimit ? 'text-orange-800' : 'text-blue-700'}>
               {isAtLimit ? '⚠️ Diagram Limit Reached' : '📊 Approaching Diagram Limit'}
             </strong>
-            <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#666' }}>
+            <p className="mt-1 mb-0 text-sm text-gray-600">
               {isAtLimit 
                 ? 'You have reached your limit of 3 diagrams. Upgrade to Pro for unlimited diagrams.'
                 : `You have ${usage.diagramCount} of ${usage.diagramLimit} diagrams. Upgrade to Pro for unlimited diagrams.`
@@ -81,47 +74,25 @@ export function SubscriptionBanner({ onUpgradeClick }: SubscriptionBannerProps) 
           </div>
           <button
             onClick={onUpgradeClick}
-            style={{
-              padding: '8px 16px',
-              background: '#1168bd',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              whiteSpace: 'nowrap',
-            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold whitespace-nowrap hover:bg-blue-700 transition-colors"
           >
             Upgrade Now
           </button>
         </div>
       )}
 
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '12px 16px',
-        background: '#f5f5f5',
-        borderRadius: '8px',
-        marginBottom: '16px',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div className="flex items-center justify-between p-3 px-4 bg-gray-100 rounded-lg mb-4">
+        <div className="flex items-center gap-4">
           <div>
-            <span style={{ fontSize: '12px', color: '#666', textTransform: 'uppercase', fontWeight: 'bold' }}>
+            <span className="text-xs text-gray-600 uppercase font-bold">
               Current Plan
             </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-              <span style={{
-                fontSize: '18px',
-                fontWeight: 'bold',
-                color: tierColors[usage.tier],
-              }}>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-lg font-bold" style={{ color: tierColors[usage.tier] }}>
                 {tierNames[usage.tier]}
               </span>
               {usage.tier !== 'free' && usage.currentPeriodEnd && (
-                <span style={{ fontSize: '12px', color: '#999' }}>
+                <span className="text-xs text-gray-500">
                   • Renews {new Date(usage.currentPeriodEnd).toLocaleDateString()}
                 </span>
               )}
@@ -129,47 +100,24 @@ export function SubscriptionBanner({ onUpgradeClick }: SubscriptionBannerProps) 
           </div>
 
           {usage.tier === 'free' && (
-            <div style={{
-              padding: '4px 12px',
-              background: 'white',
-              borderRadius: '4px',
-              fontSize: '14px',
-              color: '#666',
-            }}>
+            <div className="py-1 px-3 bg-white rounded text-sm text-gray-600">
               {usage.diagramCount} / {usage.diagramLimit} diagrams
             </div>
           )}
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div className="flex gap-2">
           {usage.tier === 'free' ? (
             <button
               onClick={onUpgradeClick}
-              style={{
-                padding: '8px 16px',
-                background: '#1168bd',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: 'bold',
-              }}
+              className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700 transition-colors"
             >
               Upgrade
             </button>
           ) : (
             <button
               onClick={handleManageBilling}
-              style={{
-                padding: '8px 16px',
-                background: 'white',
-                color: '#333',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px',
-              }}
+              className="px-4 py-2 bg-white text-gray-800 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors"
             >
               Manage Billing
             </button>

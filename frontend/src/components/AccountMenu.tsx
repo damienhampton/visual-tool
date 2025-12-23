@@ -75,92 +75,36 @@ export function AccountMenu({ onUpgradeClick }: AccountMenuProps) {
   };
 
   return (
-    <div ref={menuRef} style={{ position: 'relative' }}>
+    <div ref={menuRef} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '8px 12px',
-          background: 'rgba(255,255,255,0.1)',
-          border: 'none',
-          borderRadius: '8px',
-          color: 'white',
-          cursor: 'pointer',
-          fontSize: '14px',
-          fontWeight: '500',
-        }}
+        className="flex items-center gap-2 px-3 py-2 bg-white/10 rounded-lg text-white text-sm font-medium hover:bg-white/20 transition-colors"
       >
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '16px',
-          fontWeight: 'bold',
-        }}>
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-base font-bold">
           {user.name.charAt(0).toUpperCase()}
         </div>
         <span>{user.name}</span>
-        <span style={{ fontSize: '12px' }}>▼</span>
+        <span className="text-xs">▼</span>
       </button>
 
       {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: 'calc(100% + 8px)',
-          right: 0,
-          width: '320px',
-          background: 'white',
-          borderRadius: '12px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-          zIndex: 1000,
-          overflow: 'hidden',
-        }}>
-          <div style={{
-            padding: '20px',
-            borderBottom: '1px solid #eee',
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              marginBottom: '12px',
-            }}>
-              <div style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '24px',
-                fontWeight: 'bold',
-                color: 'white',
-              }}>
+        <div className="absolute top-[calc(100%+8px)] right-0 w-80 bg-white rounded-xl shadow-xl z-[1000] overflow-hidden">
+          <div className="p-5 border-b border-gray-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl font-bold text-white">
                 {user.name.charAt(0).toUpperCase()}
               </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#333' }}>
+              <div className="flex-1">
+                <div className="font-semibold text-base text-gray-800">
                   {user.name}
                 </div>
                 {user.email && (
-                  <div style={{ fontSize: '14px', color: '#666', marginTop: '2px' }}>
+                  <div className="text-sm text-gray-600 mt-0.5">
                     {user.email}
                   </div>
                 )}
                 {user.isGuest && (
-                  <div style={{
-                    fontSize: '12px',
-                    color: '#ff9800',
-                    marginTop: '4px',
-                    fontWeight: '500',
-                  }}>
+                  <div className="text-xs text-orange-600 mt-1 font-medium">
                     Guest Account
                   </div>
                 )}
@@ -169,26 +113,17 @@ export function AccountMenu({ onUpgradeClick }: AccountMenuProps) {
           </div>
 
           {isLoading ? (
-            <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>
+            <div className="p-5 text-center text-gray-500">
               Loading subscription info...
             </div>
           ) : usage ? (
-            <div style={{ padding: '20px', borderBottom: '1px solid #eee' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '12px',
-              }}>
+            <div className="p-5 border-b border-gray-200">
+              <div className="flex items-center justify-between mb-3">
                 <div>
-                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>
+                  <div className="text-xs text-gray-600 mb-1">
                     Current Plan
                   </div>
-                  <div style={{
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    color: tierColors[usage.tier],
-                  }}>
+                  <div className="text-xl font-bold" style={{ color: tierColors[usage.tier] }}>
                     {tierNames[usage.tier]}
                   </div>
                 </div>
@@ -198,31 +133,14 @@ export function AccountMenu({ onUpgradeClick }: AccountMenuProps) {
                       setIsOpen(false);
                       onUpgradeClick();
                     }}
-                    style={{
-                      padding: '8px 16px',
-                      background: '#1168bd',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: 'bold',
-                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors"
                   >
                     Upgrade
                   </button>
                 ) : (
                   <button
                     onClick={handleManageBilling}
-                    style={{
-                      padding: '8px 16px',
-                      background: '#f5f5f5',
-                      color: '#333',
-                      border: '1px solid #ddd',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                    }}
+                    className="px-4 py-2 bg-gray-100 text-gray-800 border border-gray-300 rounded-md text-sm hover:bg-gray-200 transition-colors"
                   >
                     Manage
                   </button>
@@ -230,47 +148,28 @@ export function AccountMenu({ onUpgradeClick }: AccountMenuProps) {
               </div>
 
               {usage.tier === 'free' && (
-                <div style={{
-                  padding: '12px',
-                  background: '#f5f5f5',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                }}>
-                  <div style={{ color: '#666', marginBottom: '4px' }}>
+                <div className="p-3 bg-gray-100 rounded-lg text-sm">
+                  <div className="text-gray-600 mb-1">
                     Diagrams
                   </div>
-                  <div style={{ fontWeight: 'bold', color: '#333' }}>
+                  <div className="font-semibold text-gray-800">
                     {usage.diagramCount} / {usage.diagramLimit} used
                   </div>
                 </div>
               )}
 
               {usage.tier !== 'free' && usage.currentPeriodEnd && (
-                <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+                <div className="text-xs text-gray-600 mt-2">
                   Renews on {new Date(usage.currentPeriodEnd).toLocaleDateString()}
                 </div>
               )}
             </div>
           ) : null}
 
-          <div style={{ padding: '8px' }}>
+          <div className="p-2">
             <button
               onClick={handleLogout}
-              style={{
-                width: '100%',
-                padding: '12px',
-                background: 'transparent',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                color: '#d32f2f',
-                fontWeight: '500',
-                textAlign: 'left',
-                transition: 'background 0.2s',
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#fee'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              className="w-full p-3 bg-transparent rounded-md text-sm text-red-700 font-medium text-left hover:bg-red-50 transition-colors"
             >
               Sign Out
             </button>

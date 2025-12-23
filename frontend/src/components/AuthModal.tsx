@@ -37,33 +37,16 @@ export function AuthModal({ onClose }: AuthModalProps) {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-    }}>
-      <div style={{
-        background: 'white',
-        borderRadius: '8px',
-        padding: '32px',
-        width: '400px',
-        maxWidth: '90%',
-      }}>
-        <h2 style={{ margin: '0 0 24px 0', fontSize: '24px', color: '#333' }}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
+      <div className="bg-white rounded-lg p-8 w-[400px] max-w-[90%] relative">
+        <h2 className="m-0 mb-6 text-2xl font-bold text-gray-800">
           {mode === 'login' ? 'Login' : mode === 'register' ? 'Register' : 'Continue as Guest'}
         </h2>
 
         <form onSubmit={handleSubmit}>
           {mode !== 'login' && (
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: '#555' }}>
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-gray-700">
                 Name
               </label>
               <input
@@ -71,21 +54,15 @@ export function AuthModal({ onClose }: AuthModalProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '14px',
-                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
             </div>
           )}
 
           {mode !== 'guest' && (
             <>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: '#555' }}>
+              <div className="mb-4">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Email
                 </label>
                 <input
@@ -93,18 +70,12 @@ export function AuthModal({ onClose }: AuthModalProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    fontSize: '14px',
-                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: '#555' }}>
+              <div className="mb-4">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Password
                 </label>
                 <input
@@ -113,27 +84,14 @@ export function AuthModal({ onClose }: AuthModalProps) {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    fontSize: '14px',
-                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
               </div>
             </>
           )}
 
           {error && (
-            <div style={{
-              padding: '12px',
-              background: '#fee',
-              color: '#c33',
-              borderRadius: '4px',
-              marginBottom: '16px',
-              fontSize: '14px',
-            }}>
+            <div className="p-3 bg-red-50 text-red-700 rounded mb-4 text-sm">
               {error}
             </div>
           )}
@@ -141,37 +99,26 @@ export function AuthModal({ onClose }: AuthModalProps) {
           <button
             type="submit"
             disabled={isLoading}
-            style={{
-              width: '100%',
-              padding: '12px',
-              background: '#1168bd',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.6 : 1,
-            }}
+            className="w-full py-3 bg-blue-600 text-white rounded text-base font-semibold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? 'Loading...' : mode === 'login' ? 'Login' : mode === 'register' ? 'Register' : 'Continue'}
           </button>
         </form>
 
-        <div style={{ marginTop: '16px', textAlign: 'center', fontSize: '14px', color: '#666' }}>
+        <div className="mt-4 text-center text-sm text-gray-600">
           {mode === 'login' ? (
             <>
               Don't have an account?{' '}
               <button
                 onClick={() => setMode('register')}
-                style={{ background: 'none', border: 'none', color: '#1168bd', cursor: 'pointer', textDecoration: 'underline' }}
+                className="bg-transparent border-none text-blue-600 cursor-pointer underline hover:text-blue-700"
               >
                 Register
               </button>
               {' or '}
               <button
                 onClick={() => setMode('guest')}
-                style={{ background: 'none', border: 'none', color: '#1168bd', cursor: 'pointer', textDecoration: 'underline' }}
+                className="bg-transparent border-none text-blue-600 cursor-pointer underline hover:text-blue-700"
               >
                 Continue as Guest
               </button>
@@ -181,7 +128,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
               Already have an account?{' '}
               <button
                 onClick={() => setMode('login')}
-                style={{ background: 'none', border: 'none', color: '#1168bd', cursor: 'pointer', textDecoration: 'underline' }}
+                className="bg-transparent border-none text-blue-600 cursor-pointer underline hover:text-blue-700"
               >
                 Login
               </button>
@@ -191,7 +138,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
               Have an account?{' '}
               <button
                 onClick={() => setMode('login')}
-                style={{ background: 'none', border: 'none', color: '#1168bd', cursor: 'pointer', textDecoration: 'underline' }}
+                className="bg-transparent border-none text-blue-600 cursor-pointer underline hover:text-blue-700"
               >
                 Login
               </button>
@@ -201,16 +148,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
 
         <button
           onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            background: 'none',
-            border: 'none',
-            fontSize: '24px',
-            cursor: 'pointer',
-            color: '#999',
-          }}
+          className="absolute top-4 right-4 bg-transparent border-none text-2xl cursor-pointer text-gray-400 hover:text-gray-600"
         >
           ×
         </button>

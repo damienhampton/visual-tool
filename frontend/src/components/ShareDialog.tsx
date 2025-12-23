@@ -39,115 +39,51 @@ export function ShareDialog({ diagramId, shareToken, onClose, onTokenRegenerated
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-    }}>
-      <div style={{
-        background: 'white',
-        borderRadius: '8px',
-        padding: '32px',
-        width: '500px',
-        maxWidth: '90%',
-      }}>
-        <h2 style={{ margin: '0 0 16px 0', fontSize: '24px', color: '#333' }}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
+      <div className="bg-white rounded-lg p-8 w-[500px] max-w-[90%]">
+        <h2 className="m-0 mb-4 text-2xl font-bold text-gray-800">
           Share Diagram
         </h2>
 
-        <p style={{ margin: '0 0 16px 0', fontSize: '14px', color: '#666' }}>
+        <p className="m-0 mb-4 text-sm text-gray-600">
           Anyone with this link can view and edit this diagram. They'll be added as a viewer automatically.
         </p>
 
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          marginBottom: '16px',
-        }}>
+        <div className="flex gap-2 mb-4">
           <input
             type="text"
             value={shareUrl}
             readOnly
-            style={{
-              flex: 1,
-              padding: '8px 12px',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '14px',
-              background: '#f5f5f5',
-            }}
+            className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm bg-gray-100"
           />
           <button
             onClick={handleCopy}
-            style={{
-              padding: '8px 16px',
-              background: copied ? '#4caf50' : '#1168bd',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              minWidth: '80px',
-            }}
+            className={`px-4 py-2 text-white rounded text-sm font-semibold min-w-[80px] transition-colors ${
+              copied ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'
+            }`}
           >
             {copied ? '✓ Copied' : 'Copy'}
           </button>
         </div>
 
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
+        <div className="flex gap-2 justify-between items-center">
           <button
             onClick={handleRegenerate}
             disabled={isRegenerating}
-            style={{
-              padding: '8px 16px',
-              background: '#f44336',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: isRegenerating ? 'not-allowed' : 'pointer',
-              fontSize: '14px',
-              opacity: isRegenerating ? 0.6 : 1,
-            }}
+            className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
           >
             {isRegenerating ? 'Regenerating...' : 'Regenerate Link'}
           </button>
 
           <button
             onClick={onClose}
-            style={{
-              padding: '8px 16px',
-              background: '#f5f5f5',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '14px',
-            }}
+            className="px-4 py-2 bg-gray-100 rounded text-sm hover:bg-gray-200 transition-colors"
           >
             Close
           </button>
         </div>
 
-        <div style={{
-          marginTop: '16px',
-          padding: '12px',
-          background: '#e3f2fd',
-          borderRadius: '4px',
-          fontSize: '12px',
-          color: '#1976d2',
-        }}>
+        <div className="mt-4 p-3 bg-blue-50 rounded text-xs text-blue-700">
           <strong>Note:</strong> Regenerating the link will invalidate the old one. Anyone using the old link will lose access.
         </div>
       </div>
