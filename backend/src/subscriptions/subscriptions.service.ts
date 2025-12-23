@@ -36,15 +36,19 @@ export class SubscriptionsService {
     });
 
     if (!subscription) {
-      // Create new subscription using TypeORM (works properly with PostgreSQL)
-      subscription = this.subscriptionRepository.create({
-        userId,
-        tier: SubscriptionTier.FREE,
-        status: SubscriptionStatus.ACTIVE,
-        cancelAtPeriodEnd: false,
-      });
+      // Use raw SQL with PostgreSQL syntax (TypeORM has issues with @ManyToOne on same column as FK)
+      const crypto = require('crypto');
+      const id = crypto.randomUUID();
       
-      subscription = await this.subscriptionRepository.save(subscription);
+      await this.subscriptionRepository.manager.query(
+        `INSERT INTO subscriptions (id, "userId", tier, status, "cancelAtPeriodEnd", "createdAt", "updatedAt") 
+         VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
+        [id, userId, SubscriptionTier.FREE, SubscriptionStatus.ACTIVE, false]
+      );
+      
+      subscription = await this.subscriptionRepository.findOne({
+        where: { id },
+      });
     }
 
     return subscription;

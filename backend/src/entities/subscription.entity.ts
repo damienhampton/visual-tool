@@ -37,7 +37,6 @@ export class Subscription {
   userId: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column({
