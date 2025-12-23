@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { diagramApi } from '../lib/api';
 import type { Diagram } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
+import { SubscriptionBanner } from './SubscriptionBanner';
+import { PricingPage } from './PricingPage';
 
 interface DiagramListProps {
   onSelectDiagram: (diagramId: string) => void;
@@ -14,6 +16,7 @@ export function DiagramList({ onSelectDiagram, onClose }: DiagramListProps) {
   const [error, setError] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newDiagramTitle, setNewDiagramTitle] = useState('');
+  const [showPricing, setShowPricing] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -46,7 +49,14 @@ export function DiagramList({ onSelectDiagram, onClose }: DiagramListProps) {
       setNewDiagramTitle('');
       onSelectDiagram(newDiagram.id);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create diagram');
+      const errorMessage = err.response?.data?.message || 'Failed to create diagram';
+      setError(errorMessage);
+      
+      // If it's a limit error, show pricing modal
+      if (errorMessage.includes('limit') || errorMessage.includes('Upgrade')) {
+        setShowCreateModal(false);
+        setShowPricing(true);
+      }
     }
   };
 
@@ -104,6 +114,8 @@ export function DiagramList({ onSelectDiagram, onClose }: DiagramListProps) {
             + New Diagram
           </button>
         </div>
+
+        <SubscriptionBanner onUpgradeClick={() => setShowPricing(true)} />
 
         {error && (
           <div style={{
@@ -288,6 +300,10 @@ export function DiagramList({ onSelectDiagram, onClose }: DiagramListProps) {
           </div>
         )}
       </div>
+
+      {showPricing && (
+        <PricingPage onClose={() => setShowPricing(false)} />
+      )}
     </div>
   );
 }

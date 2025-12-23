@@ -73,6 +73,22 @@ export const authApi = {
   },
 };
 
+export interface Subscription {
+  id: string;
+  userId: string;
+  tier: 'free' | 'pro' | 'team';
+  status: string;
+  currentPeriodEnd: string | null;
+}
+
+export interface UsageStats {
+  tier: 'free' | 'pro' | 'team';
+  status: string;
+  diagramCount: number;
+  diagramLimit: number;
+  currentPeriodEnd: string | null;
+}
+
 export const diagramApi = {
   create: async (title: string, data?: DiagramData): Promise<Diagram> => {
     const response = await api.post('/diagrams', { title, data });
@@ -105,6 +121,28 @@ export const diagramApi = {
 
   regenerateShareToken: async (id: string): Promise<{ shareToken: string }> => {
     const response = await api.post(`/diagrams/${id}/share`);
+    return response.data;
+  },
+};
+
+export const subscriptionApi = {
+  getMySubscription: async (): Promise<Subscription> => {
+    const response = await api.get('/subscriptions/me');
+    return response.data;
+  },
+
+  getUsage: async (): Promise<UsageStats> => {
+    const response = await api.get('/subscriptions/usage');
+    return response.data;
+  },
+
+  createCheckoutSession: async (tier: 'pro' | 'team', successUrl: string, cancelUrl: string): Promise<{ sessionId: string; url: string }> => {
+    const response = await api.post('/subscriptions/checkout', { tier, successUrl, cancelUrl });
+    return response.data;
+  },
+
+  createBillingPortalSession: async (returnUrl: string): Promise<{ url: string }> => {
+    const response = await api.post('/subscriptions/portal', { returnUrl });
     return response.data;
   },
 };
