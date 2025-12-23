@@ -5,7 +5,7 @@ import { User } from '../entities/user.entity';
 import { Diagram } from '../entities/diagram.entity';
 import { DiagramVersion } from '../entities/diagram-version.entity';
 import { DiagramCollaborator } from '../entities/diagram-collaborator.entity';
-import { Subscription } from '../entities/subscription.entity';
+import { Subscription, SubscriptionStatus } from '../entities/subscription.entity';
 
 @Injectable()
 export class AdminService {
@@ -60,13 +60,13 @@ export class AdminService {
       }),
       this.subscriptionRepository.count(),
       this.subscriptionRepository.count({
-        where: { status: 'active' },
+        where: { status: SubscriptionStatus.ACTIVE },
       }),
       this.subscriptionRepository.count({
-        where: { tier: 'pro', status: 'active' },
+        where: { tier: 'pro' as any, status: SubscriptionStatus.ACTIVE },
       }),
       this.subscriptionRepository.count({
-        where: { tier: 'team', status: 'active' },
+        where: { tier: 'team' as any, status: SubscriptionStatus.ACTIVE },
       }),
     ]);
 
@@ -190,7 +190,7 @@ export class AdminService {
 
   async getRecentUpgrades(limit: number = 10) {
     return this.subscriptionRepository.find({
-      where: { status: 'active' },
+      where: { status: SubscriptionStatus.ACTIVE },
       order: { createdAt: 'DESC' },
       take: limit,
       relations: ['user'],
@@ -199,7 +199,7 @@ export class AdminService {
 
   async getActiveUsersChart(hours: number = 24) {
     const now = new Date();
-    const intervals = [];
+    const intervals: Array<{ hour: string; activeUsers: number }> = [];
     
     // Generate hourly intervals
     for (let i = hours - 1; i >= 0; i--) {
@@ -341,15 +341,17 @@ export class AdminService {
       return { success: true, message: 'Subscription removed' };
     }
 
+    const tierEnum = tier === 'pro' ? 'pro' : 'team';
+
     if (subscription) {
-      subscription.tier = tier;
-      subscription.status = 'active';
+      subscription.tier = tierEnum as any;
+      subscription.status = SubscriptionStatus.ACTIVE;
       await this.subscriptionRepository.save(subscription);
     } else {
       subscription = this.subscriptionRepository.create({
         userId,
-        tier,
-        status: 'active',
+        tier: tierEnum as any,
+        status: SubscriptionStatus.ACTIVE,
         stripeCustomerId: 'manual_override',
         stripeSubscriptionId: 'manual_override',
       });
@@ -404,7 +406,7 @@ export class AdminService {
       throw new Error('Subscription not found');
     }
 
-    subscription.status = 'canceled';
+    subscription.status = SubscriptionStatus.CANCELED;
     await this.subscriptionRepository.save(subscription);
 
     return { success: true, subscription };
@@ -476,7 +478,7 @@ export class AdminService {
 
   private async calculateMRR(): Promise<number> {
     const activeSubscriptions = await this.subscriptionRepository.find({
-      where: { status: 'active' },
+      where: { status: SubscriptionStatus.ACTIVE },
     });
 
     return activeSubscriptions.reduce((total, sub) => {
@@ -495,7 +497,7 @@ export class AdminService {
       }),
       this.subscriptionRepository.count({
         where: {
-          status: 'canceled',
+          status: SubscriptionStatus.CANCELED,
           updatedAt: MoreThan(oneMonthAgo),
         },
       }),
