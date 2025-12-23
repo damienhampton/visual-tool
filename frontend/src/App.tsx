@@ -19,6 +19,10 @@ import { DiagramList } from './components/DiagramList';
 import { Sidebar } from './components/Sidebar';
 import { C4Node } from './components/nodes/C4Node';
 import type { C4NodeType, C4NodeData } from './components/nodes/C4Node';
+import { BasicShapeNode } from './components/nodes/BasicShapeNode';
+import type { BasicShapeType, BasicShapeNodeData } from './components/nodes/BasicShapeNode';
+import { FlowChartNode } from './components/nodes/FlowChartNode';
+import type { FlowChartType, FlowChartNodeData } from './components/nodes/FlowChartNode';
 import { diagramApi } from './lib/api';
 import type { Diagram } from './lib/api';
 import { useCollaboration } from './hooks/useCollaboration';
@@ -30,6 +34,8 @@ import { PricingPage } from './components/PricingPage';
 
 const nodeTypes = {
   c4Node: C4Node,
+  basicShapeNode: BasicShapeNode,
+  flowChartNode: FlowChartNode,
 };
 
 const defaultLabels: Record<C4NodeType, string> = {
@@ -37,6 +43,25 @@ const defaultLabels: Record<C4NodeType, string> = {
   softwareSystem: 'New System',
   container: 'New Container',
   component: 'New Component',
+};
+
+const basicShapeLabels: Record<BasicShapeType, string> = {
+  square: 'Square',
+  circle: 'Circle',
+  triangle: 'Triangle',
+  diamond: 'Diamond',
+  star: 'Star',
+  hexagon: 'Hexagon',
+};
+
+const flowChartLabels: Record<FlowChartType, string> = {
+  start: 'Start',
+  end: 'End',
+  process: 'Process',
+  decision: 'Decision',
+  input: 'Input',
+  output: 'Output',
+  document: 'Document',
 };
 
 let nodeId = 0;
@@ -131,8 +156,10 @@ function Flow({ diagramId }: FlowProps) {
     (event: DragEvent) => {
       event.preventDefault();
 
-      const type = event.dataTransfer.getData('application/c4-node-type') as C4NodeType;
-      if (!type || !reactFlowWrapper.current) return;
+      const nodeType = event.dataTransfer.getData('application/node-type');
+      const paletteType = event.dataTransfer.getData('application/palette-type');
+      
+      if (!nodeType || !paletteType || !reactFlowWrapper.current) return;
 
       const bounds = reactFlowWrapper.current.getBoundingClientRect();
       const position = screenToFlowPosition({
@@ -140,15 +167,44 @@ function Flow({ diagramId }: FlowProps) {
         y: event.clientY - bounds.top,
       });
 
-      const newNode: Node = {
-        id: getNodeId(),
-        type: 'c4Node',
-        position,
-        data: {
-          label: defaultLabels[type],
-          type,
-        } as C4NodeData,
-      };
+      let newNode: Node;
+
+      if (paletteType === 'c4') {
+        const c4Type = nodeType as C4NodeType;
+        newNode = {
+          id: getNodeId(),
+          type: 'c4Node',
+          position,
+          data: {
+            label: defaultLabels[c4Type],
+            type: c4Type,
+          } as C4NodeData,
+        };
+      } else if (paletteType === 'basicShapes') {
+        const shapeType = nodeType as BasicShapeType;
+        newNode = {
+          id: getNodeId(),
+          type: 'basicShapeNode',
+          position,
+          data: {
+            label: basicShapeLabels[shapeType],
+            shapeType,
+          } as BasicShapeNodeData,
+        };
+      } else if (paletteType === 'flowChart') {
+        const flowType = nodeType as FlowChartType;
+        newNode = {
+          id: getNodeId(),
+          type: 'flowChartNode',
+          position,
+          data: {
+            label: flowChartLabels[flowType],
+            flowType,
+          } as FlowChartNodeData,
+        };
+      } else {
+        return;
+      }
 
       setNodes((nds) => nds.concat(newNode));
     },
@@ -218,7 +274,7 @@ function Flow({ diagramId }: FlowProps) {
 }
 
 function AppContent() {
-  const { user, logout, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showDiagramList, setShowDiagramList] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
@@ -263,7 +319,7 @@ function AppContent() {
   return (
     <div className="w-screen h-screen flex flex-col">
       <div className="h-[60px] bg-blue-600 text-white flex items-center justify-between px-8 shadow-md">
-        <h1 className="m-0 text-xl font-bold">C4 Diagram Tool</h1>
+        <h1 className="m-0 text-xl font-bold">Visual Diagram Tool</h1>
         <div className="flex items-center gap-4">
           {user && (
             <>
