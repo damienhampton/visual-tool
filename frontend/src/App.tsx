@@ -78,6 +78,7 @@ function Flow({ diagramId }: FlowProps) {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [diagram, setDiagram] = useState<Diagram | null>(null);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const canEditRef = useRef(false);
   const { screenToFlowPosition } = useReactFlow();
   const { user } = useAuth();
   const { isConnected, activeUsers, myColor, sendCursorPosition } = useCollaboration({
@@ -94,9 +95,22 @@ function Flow({ diagramId }: FlowProps) {
     try {
       const data = await diagramApi.get(id);
       setDiagram(data);
+      canEditRef.current = data.userRole === 'owner' || data.userRole === 'editor';
       if (data.currentVersion) {
-        setNodes(data.currentVersion.data.nodes || []);
+        const loadedNodes = data.currentVersion.data.nodes || [];
+        setNodes(loadedNodes);
         setEdges(data.currentVersion.data.edges || []);
+        
+        // Update nodeId counter to avoid ID collisions
+        loadedNodes.forEach((node: Node) => {
+          const match = node.id.match(/^node_(\d+)$/);
+          if (match) {
+            const num = parseInt(match[1], 10);
+            if (num >= nodeId) {
+              nodeId = num + 1;
+            }
+          }
+        });
       }
     } catch (error) {
       console.error('Failed to load diagram:', error);
@@ -110,12 +124,7 @@ function Flow({ diagramId }: FlowProps) {
   };
 
   useEffect(() => {
-    if (!diagramId || !diagram) return;
-    
-    // Only autosave if user has edit permissions
-    if (diagram.userRole !== 'owner' && diagram.userRole !== 'editor') {
-      return;
-    }
+    if (!diagramId || !canEditRef.current) return;
     
     const timeoutId = setTimeout(async () => {
       try {
@@ -132,7 +141,7 @@ function Flow({ diagramId }: FlowProps) {
     }, 1000);
     
     return () => clearTimeout(timeoutId);
-  }, [nodes, edges, diagramId, diagram]);
+  }, [nodes, edges, diagramId]);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
