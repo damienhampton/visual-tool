@@ -564,11 +564,11 @@ Focus on pragmatic testing that provides value without creating maintenance burd
 - [x] Set up SQLite in-memory database for test isolation
 - [x] Create test module configuration
 - [x] Implement E2E test suite:
-  - [x] Auth flow (register → login → JWT validation)
-  - [x] Diagram CRUD with permissions
-  - [x] WebSocket collaboration (connection → updates → cursor tracking)
-  - [x] Subscription tiers and plan limits (partial - 6/13 tests)
-  - [x] Admin operations (user management → audit logs) (partial - 23/37 tests)
+  - [x] Auth flow (register → login → JWT validation) - 15/15 ✅
+  - [x] Diagram CRUD with permissions - 19/19 ✅
+  - [x] WebSocket collaboration (connection → updates → cursor tracking) - 18/18 ✅
+  - [x] Subscription tiers and plan limits (partial - 6/13 tests, TypeORM/SQLite issue)
+  - [x] Admin operations (user management → audit logs) (partial - 26/37 tests, TypeORM/SQLite issue)
 
 **2. Module Integration Tests**
 - [ ] AuthModule tests (password hashing, JWT generation, user creation)

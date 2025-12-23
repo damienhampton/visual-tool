@@ -36,7 +36,7 @@ export class Subscription {
   @Index()
   userId: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { createForeignKeyConstraints: false })
   @JoinColumn({ name: 'userId' })
   user: User;
 

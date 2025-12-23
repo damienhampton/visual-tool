@@ -255,7 +255,7 @@ export class AdminService {
 
     if (search) {
       queryBuilder.where(
-        'user.name ILIKE :search OR user.email ILIKE :search',
+        'LOWER(user.name) LIKE LOWER(:search) OR LOWER(user.email) LIKE LOWER(:search)',
         { search: `%${search}%` },
       );
     }
@@ -419,7 +419,7 @@ export class AdminService {
       .leftJoinAndSelect('diagram.owner', 'owner');
 
     if (search) {
-      queryBuilder.where('diagram.title ILIKE :search', { search: `%${search}%` });
+      queryBuilder.where('LOWER(diagram.title) LIKE LOWER(:search)', { search: `%${search}%` });
     }
 
     const [diagrams, total] = await queryBuilder
@@ -467,7 +467,11 @@ export class AdminService {
       throw new Error('Diagram not found');
     }
 
+    // Delete related records first to avoid foreign key constraint errors
+    await this.diagramVersionRepository.delete({ diagramId });
+    await this.collaboratorRepository.delete({ diagramId });
     await this.diagramRepository.remove(diagram);
+    
     return { success: true };
   }
 
