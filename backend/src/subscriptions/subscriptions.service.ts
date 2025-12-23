@@ -219,17 +219,16 @@ export class SubscriptionsService {
       where: { ownerId: userId },
     });
 
+    // Treat non-active subscriptions as free tier (payment failed, canceled, etc.)
+    const isActivePaidTier = 
+      subscription.tier !== SubscriptionTier.FREE && 
+      subscription.status === SubscriptionStatus.ACTIVE;
+
     let limit: number;
-    switch (subscription.tier) {
-      case SubscriptionTier.FREE:
-        limit = 3;
-        break;
-      case SubscriptionTier.PRO:
-      case SubscriptionTier.TEAM:
-        limit = -1; // Unlimited
-        break;
-      default:
-        limit = 3;
+    if (isActivePaidTier) {
+      limit = -1; // Unlimited for active Pro/Team subscriptions
+    } else {
+      limit = 3; // Free tier limit
     }
 
     return {
