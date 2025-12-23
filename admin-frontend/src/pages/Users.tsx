@@ -102,6 +102,9 @@ export default function Users() {
                       Type
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Last Active
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Created
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -137,6 +140,18 @@ export default function Users() {
                         >
                           {user.isGuest ? 'Guest' : 'Registered'}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {user.lastActiveAt ? (
+                          <div>
+                            <div>{new Date(user.lastActiveAt).toLocaleDateString()}</div>
+                            <div className="text-xs text-gray-400">
+                              {new Date(user.lastActiveAt).toLocaleTimeString()}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-gray-400">Never</span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {new Date(user.createdAt).toLocaleDateString()}
