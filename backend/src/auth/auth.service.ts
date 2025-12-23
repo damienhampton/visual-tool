@@ -140,8 +140,8 @@ export class AuthService {
 
     await this.userRepository.update(user.id, {
       passwordHash,
-      resetToken: null,
-      resetTokenExpiry: null,
+      resetToken: undefined,
+      resetTokenExpiry: undefined,
     });
 
     return { message: 'Password has been reset successfully' };

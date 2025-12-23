@@ -51,7 +51,7 @@ export class SubscriptionsService {
       });
     }
 
-    return subscription;
+    return subscription!;
   }
 
   async getUserSubscription(userId: string): Promise<Subscription> {
