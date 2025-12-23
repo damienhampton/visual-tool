@@ -41,16 +41,14 @@ export class Subscription {
   user: User;
 
   @Column({
-    type: 'enum',
-    enum: SubscriptionTier,
+    type: 'varchar',
     default: SubscriptionTier.FREE,
   })
   @Index()
   tier: SubscriptionTier;
 
   @Column({
-    type: 'enum',
-    enum: SubscriptionStatus,
+    type: 'varchar',
     default: SubscriptionStatus.ACTIVE,
   })
   @Index()
@@ -65,22 +63,22 @@ export class Subscription {
   @Column({ nullable: true })
   stripePriceId: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   currentPeriodStart: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   currentPeriodEnd: Date;
 
   @Column({ type: 'boolean', default: false })
   cancelAtPeriodEnd: boolean;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   canceledAt: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   trialStart: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   trialEnd: Date;
 
   @CreateDateColumn()

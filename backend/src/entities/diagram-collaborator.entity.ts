@@ -39,8 +39,7 @@ export class DiagramCollaborator {
   user: User;
 
   @Column({
-    type: 'enum',
-    enum: CollaboratorRole,
+    type: 'varchar',
     default: CollaboratorRole.VIEWER,
   })
   role: CollaboratorRole;

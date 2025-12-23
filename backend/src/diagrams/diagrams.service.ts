@@ -203,6 +203,9 @@ export class DiagramsService {
       throw new ForbiddenException('Only the owner can delete this diagram');
     }
 
+    // Delete related records first to avoid foreign key constraint issues
+    await this.versionRepository.delete({ diagramId: id });
+    await this.collaboratorRepository.delete({ diagramId: id });
     await this.diagramRepository.remove(diagram);
   }
 

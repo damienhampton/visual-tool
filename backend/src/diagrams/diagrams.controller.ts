@@ -18,16 +18,17 @@ import { UpdateDiagramDto } from './dto/update-diagram.dto';
 import { AddCollaboratorDto } from './dto/add-collaborator.dto';
 
 @Controller('diagrams')
-@UseGuards(JwtAuthGuard)
 export class DiagramsController {
   constructor(private readonly diagramsService: DiagramsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() createDiagramDto: CreateDiagramDto, @CurrentUser() user: User) {
     return this.diagramsService.create(createDiagramDto, user);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll(@CurrentUser() user: User) {
     return this.diagramsService.findAll(user);
   }
@@ -35,17 +36,19 @@ export class DiagramsController {
   @Get('shared/:token')
   findByShareToken(
     @Param('token') token: string,
-    @CurrentUser() user: User,
+    @CurrentUser() user?: User,
   ) {
     return this.diagramsService.findByShareToken(token, user);
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string, @CurrentUser() user: User) {
     return this.diagramsService.findOne(id, user);
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id') id: string,
     @Body() updateDiagramDto: UpdateDiagramDto,
@@ -55,21 +58,25 @@ export class DiagramsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.diagramsService.remove(id, user);
   }
 
   @Post(':id/share')
+  @UseGuards(JwtAuthGuard)
   regenerateShareToken(@Param('id') id: string, @CurrentUser() user: User) {
     return this.diagramsService.regenerateShareToken(id, user);
   }
 
   @Get(':id/collaborators')
+  @UseGuards(JwtAuthGuard)
   getCollaborators(@Param('id') id: string, @CurrentUser() user: User) {
     return this.diagramsService.getCollaborators(id, user);
   }
 
   @Post(':id/collaborators')
+  @UseGuards(JwtAuthGuard)
   addCollaborator(
     @Param('id') id: string,
     @Body() addCollaboratorDto: AddCollaboratorDto,
@@ -79,6 +86,7 @@ export class DiagramsController {
   }
 
   @Delete(':id/collaborators/:userId')
+  @UseGuards(JwtAuthGuard)
   removeCollaborator(
     @Param('id') id: string,
     @Param('userId') userId: string,

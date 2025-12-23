@@ -550,7 +550,96 @@ Stored in `DiagramVersion.data`:
 - **State Management**: React Query
 - **Forms**: React Hook Form + Zod validation
 
-### Phase 5: Enhanced Diagramming
+### Phase 5: Testing & Quality Assurance (NEXT PRIORITY)
+
+#### Testing Philosophy
+Focus on pragmatic testing that provides value without creating maintenance burden:
+- **Backend**: E2E black box tests with in-memory database (primary), module integration tests (secondary), minimal targeted unit tests
+- **Frontend**: Component tests for UI logic, E2E tests for critical flows, hook testing for custom hooks
+- **Avoid**: Excessive unit tests that make refactoring difficult
+
+#### Backend Testing Strategy
+
+**1. E2E Black Box Tests (Primary Focus)**
+- [ ] Set up SQLite in-memory database for test isolation
+- [ ] Create test module configuration
+- [ ] Implement E2E test suite:
+  - [ ] Auth flow (register → login → JWT validation)
+  - [ ] Diagram CRUD with permissions
+  - [ ] WebSocket collaboration (connection → updates → cursor tracking)
+  - [ ] Subscription webhooks and plan limits
+  - [ ] Admin operations (user management → audit logs)
+
+**2. Module Integration Tests**
+- [ ] AuthModule tests (password hashing, JWT generation, user creation)
+- [ ] DiagramsModule tests (ownership checks, version management, permissions)
+- [ ] CollaborationModule tests (Y.js sync, presence tracking)
+- [ ] SubscriptionsModule tests (Stripe mocked, plan limit enforcement)
+- [ ] AdminModule tests (statistics, user management)
+
+**3. Targeted Unit Tests (Minimal)**
+- [ ] Complex business logic only:
+  - [ ] Password validation in auth.service
+  - [ ] Permission calculations in diagrams.service
+  - [ ] Plan limit enforcement in subscriptions.service
+
+**4. Test Infrastructure**
+- [ ] Configure Jest for unit and integration tests
+- [ ] Set up test database configuration
+- [ ] Create test utilities and helpers
+- [ ] Add test coverage reporting
+- [ ] Configure CI/CD test pipeline
+
+#### Frontend Testing Strategy
+
+**1. Component Testing Setup**
+- [ ] Install Vitest + React Testing Library
+- [ ] Configure test environment with jsdom
+- [ ] Set up test utilities and mocks
+- [ ] Create mock API and WebSocket providers
+
+**2. Component Tests**
+- [ ] AuthModal (form validation, submission)
+- [ ] DiagramList (rendering, filtering, actions)
+- [ ] ShareDialog (permission management UI)
+- [ ] AccountMenu (subscription display, navigation)
+- [ ] PricingPage (plan selection, checkout flow)
+- [ ] C4Node (rendering, editing, interactions)
+
+**3. Hook Tests**
+- [ ] useCollaboration (connection lifecycle, state updates, cleanup)
+- [ ] useAuth (login/logout, token management)
+
+**4. E2E Tests with Playwright (Optional but Recommended)**
+- [ ] Install and configure Playwright
+- [ ] Implement critical user flows:
+  - [ ] Complete signup → create diagram → edit → share
+  - [ ] Real-time collaboration between two browser instances
+  - [ ] Subscription purchase flow
+  - [ ] Admin dashboard operations
+- [ ] Set up visual regression testing (optional)
+
+**5. Test Scripts**
+- [ ] Add test commands to package.json
+- [ ] Configure test:watch mode
+- [ ] Set up coverage thresholds
+- [ ] Add pre-commit test hooks
+
+#### Technology Stack
+- **Backend**: Jest + Supertest + SQLite (in-memory)
+- **Frontend**: Vitest + React Testing Library + jsdom
+- **E2E**: Playwright
+- **Mocking**: Jest mocks for Stripe, external APIs
+
+#### Success Criteria
+- [ ] All critical user flows covered by E2E tests
+- [ ] Each backend module has integration tests
+- [ ] Key frontend components have unit tests
+- [ ] Tests run in CI/CD pipeline
+- [ ] Test suite completes in under 2 minutes
+- [ ] No flaky tests
+
+### Phase 6: Enhanced Diagramming
 - [ ] Connect shapes with edges/arrows (basic connection exists, enhance with labels)
 - [ ] Snap-to-grid
 - [ ] Object colour customization
@@ -561,7 +650,7 @@ Stored in `DiagramVersion.data`:
 - [ ] Export to JSON/YAML
 - [ ] Import from JSON/YAML
 
-### Phase 6: Scalability & Performance Optimization
+### Phase 7: Scalability & Performance Optimization
 
 #### Scalability Assessment (Dec 2024)
 
@@ -745,7 +834,7 @@ Stored in `DiagramVersion.data`:
   - [ ] Measure autosave throughput
   - [ ] Document all benchmarks in PERFORMANCE.md
 
-### Phase 7: Advanced Features
+### Phase 8: Advanced Features
 - [ ] Detailed object types (AWS resources, etc.)
 - [ ] Drill-down navigation between C4 levels
 - [ ] Side-by-side views
