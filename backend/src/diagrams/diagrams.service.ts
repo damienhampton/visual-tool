@@ -15,6 +15,7 @@ import { CreateDiagramDto } from './dto/create-diagram.dto';
 import { UpdateDiagramDto } from './dto/update-diagram.dto';
 import { AddCollaboratorDto } from './dto/add-collaborator.dto';
 import { DiagramResponseDto, DiagramListItemDto } from './dto/diagram-response.dto';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 
 @Injectable()
 export class DiagramsService {
@@ -25,9 +26,18 @@ export class DiagramsService {
     private versionRepository: Repository<DiagramVersion>,
     @InjectRepository(DiagramCollaborator)
     private collaboratorRepository: Repository<DiagramCollaborator>,
+    private subscriptionsService: SubscriptionsService,
   ) {}
 
   async create(createDiagramDto: CreateDiagramDto, user: User): Promise<DiagramResponseDto> {
+    // Check diagram limit
+    const limitCheck = await this.subscriptionsService.checkDiagramLimit(user.id);
+    if (!limitCheck.allowed) {
+      throw new ForbiddenException(
+        `Diagram limit reached. You have ${limitCheck.current} of ${limitCheck.limit} diagrams. Upgrade to Pro for unlimited diagrams.`,
+      );
+    }
+
     const shareToken = this.generateShareToken();
 
     const diagram = this.diagramRepository.create({
