@@ -566,7 +566,7 @@ Focus on pragmatic testing that provides value without creating maintenance burd
 - [x] Implement E2E test suite:
   - [x] Auth flow (register → login → JWT validation)
   - [x] Diagram CRUD with permissions
-  - [ ] WebSocket collaboration (connection → updates → cursor tracking)
+  - [x] WebSocket collaboration (connection → updates → cursor tracking)
   - [ ] Subscription webhooks and plan limits
   - [ ] Admin operations (user management → audit logs)
 
