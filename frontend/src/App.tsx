@@ -25,6 +25,8 @@ import { useCollaboration } from './hooks/useCollaboration';
 import { RemoteCursors } from './components/RemoteCursors';
 import { UserPresence } from './components/UserPresence';
 import { ShareDialog } from './components/ShareDialog';
+import { AccountMenu } from './components/AccountMenu';
+import { PricingPage } from './components/PricingPage';
 
 const nodeTypes = {
   c4Node: C4Node,
@@ -244,6 +246,7 @@ function AppContent() {
   const { user, logout, isLoading } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showDiagramList, setShowDiagramList] = useState(false);
+  const [showPricing, setShowPricing] = useState(false);
   const [currentDiagramId, setCurrentDiagramId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -313,21 +316,7 @@ function AppContent() {
               >
                 My Diagrams
               </button>
-              <span style={{ fontSize: '14px' }}>{user.name}</span>
-              <button
-                onClick={logout}
-                style={{
-                  padding: '8px 16px',
-                  background: 'rgba(255,255,255,0.2)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                }}
-              >
-                Logout
-              </button>
+              <AccountMenu onUpgradeClick={() => setShowPricing(true)} />
             </>
           )}
         </div>
@@ -347,6 +336,7 @@ function AppContent() {
           onClose={() => setShowDiagramList(false)}
         />
       )}
+      {showPricing && <PricingPage onClose={() => setShowPricing(false)} />}
     </div>
   );
 }
