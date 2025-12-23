@@ -1,0 +1,173 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.1.0
+
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:20.11
+    working_directory: ~/project
+
+jobs:
+  # Backend tests
+  test-backend:
+    executor: node-executor
+    docker:
+      - image: cimg/node:20.11
+      - image: cimg/postgres:16.0
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: visual_tool_test
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - backend-deps-{{ checksum "backend/package-lock.json" }}
+            - backend-deps-
+      - run:
+          name: Install Backend Dependencies
+          command: cd backend && npm ci
+      - save_cache:
+          key: backend-deps-{{ checksum "backend/package-lock.json" }}
+          paths:
+            - backend/node_modules
+      - run:
+          name: Wait for Postgres
+          command: |
+            for i in {1..30}; do
+              if pg_isready -h localhost -p 5432 -U postgres; then
+                echo "Postgres is ready"
+                break
+              fi
+              echo "Waiting for Postgres..."
+              sleep 2
+            done
+      - run:
+          name: Run Backend Unit Tests
+          command: cd backend && npm run test
+          environment:
+            DATABASE_HOST: localhost
+            DATABASE_PORT: 5432
+            DATABASE_USER: postgres
+            DATABASE_PASSWORD: postgres
+            DATABASE_NAME: visual_tool_test
+            JWT_SECRET: test-secret-key
+            JWT_EXPIRES_IN: 7d
+      - run:
+          name: Run Backend E2E Tests
+          command: cd backend && npm run test:e2e
+          environment:
+            DATABASE_HOST: localhost
+            DATABASE_PORT: 5432
+            DATABASE_USER: postgres
+            DATABASE_PASSWORD: postgres
+            DATABASE_NAME: visual_tool_test
+            JWT_SECRET: test-secret-key
+            JWT_EXPIRES_IN: 7d
+            STRIPE_SECRET_KEY: sk_test_dummy
+            STRIPE_PUBLISHABLE_KEY: pk_test_dummy
+            STRIPE_WEBHOOK_SECRET: whsec_dummy
+            STRIPE_PRO_PRICE_ID: price_dummy
+            STRIPE_TEAM_PRICE_ID: price_dummy
+            RESEND_API_KEY: re_dummy
+            FROM_EMAIL: test@example.com
+            APP_URL: http://localhost:5173
+
+  # Frontend tests
+  test-frontend:
+    executor: node-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - frontend-deps-{{ checksum "frontend/package-lock.json" }}
+            - frontend-deps-
+      - run:
+          name: Install Frontend Dependencies
+          command: cd frontend && npm ci
+      - save_cache:
+          key: frontend-deps-{{ checksum "frontend/package-lock.json" }}
+          paths:
+            - frontend/node_modules
+      - run:
+          name: Lint Frontend
+          command: cd frontend && npm run lint
+      - run:
+          name: Build Frontend
+          command: cd frontend && npm run build
+          environment:
+            VITE_API_URL: http://localhost:3000
+
+  # Admin Frontend tests
+  test-admin:
+    executor: node-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - admin-deps-{{ checksum "admin-frontend/package-lock.json" }}
+            - admin-deps-
+      - run:
+          name: Install Admin Dependencies
+          command: cd admin-frontend && npm ci
+      - save_cache:
+          key: admin-deps-{{ checksum "admin-frontend/package-lock.json" }}
+          paths:
+            - admin-frontend/node_modules
+      - run:
+          name: Lint Admin
+          command: cd admin-frontend && npm run lint
+      - run:
+          name: Build Admin
+          command: cd admin-frontend && npm run build
+          environment:
+            VITE_API_URL: http://localhost:3000
+
+  # Deploy to Render
+  deploy:
+    executor: node-executor
+    steps:
+      - checkout
+      - run:
+          name: Trigger Render Deployment
+          command: |
+            echo "Deploying to Render..."
+            # Backend deployment
+            curl -X POST \
+              -H "Accept: application/json" \
+              -H "Authorization: Bearer ${RENDER_API_KEY}" \
+              "https://api.render.com/v1/services/${RENDER_BACKEND_SERVICE_ID}/deploys"
+            
+            # Frontend deployment
+            curl -X POST \
+              -H "Accept: application/json" \
+              -H "Authorization: Bearer ${RENDER_API_KEY}" \
+              "https://api.render.com/v1/services/${RENDER_FRONTEND_SERVICE_ID}/deploys"
+            
+            # Admin deployment
+            curl -X POST \
+              -H "Accept: application/json" \
+              -H "Authorization: Bearer ${RENDER_API_KEY}" \
+              "https://api.render.com/v1/services/${RENDER_ADMIN_SERVICE_ID}/deploys"
+            
+            echo "Deployment triggered successfully!"
+
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - test-backend
+      - test-frontend
+      - test-admin
+      - deploy:
+          requires:
+            - test-backend
+            - test-frontend
+            - test-admin
+          filters:
+            branches:
+              only:
+                - main
+                - production
