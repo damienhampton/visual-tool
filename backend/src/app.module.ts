@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -14,6 +14,7 @@ import { DiagramVersion } from './entities/diagram-version.entity';
 import { DiagramCollaborator } from './entities/diagram-collaborator.entity';
 import { Subscription } from './entities/subscription.entity';
 import { AuditLog } from './entities/audit-log.entity';
+import { ActivityTrackerMiddleware } from './auth/middleware/activity-tracker.middleware';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AuditLog } from './entities/audit-log.entity';
         synchronize: true, // Set to false in production, use migrations instead
       }),
     }),
+    TypeOrmModule.forFeature([User]),
     AuthModule,
     DiagramsModule,
     CollaborationModule,
@@ -42,4 +44,10 @@ import { AuditLog } from './entities/audit-log.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(ActivityTrackerMiddleware)
+      .forRoutes('*');
+  }
+}

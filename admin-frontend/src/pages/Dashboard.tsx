@@ -55,6 +55,30 @@ export default function Dashboard() {
     },
   });
 
+  const { data: activeUsersChart } = useQuery({
+    queryKey: ['active-users-chart'],
+    queryFn: async () => {
+      const response = await adminApi.dashboard.getActiveUsersChart(24);
+      return response.data;
+    },
+  });
+
+  const { data: currentlyActive } = useQuery({
+    queryKey: ['currently-active'],
+    queryFn: async () => {
+      const response = await adminApi.dashboard.getCurrentlyActive(20);
+      return response.data;
+    },
+  });
+
+  const { data: recentlyActive } = useQuery({
+    queryKey: ['recently-active'],
+    queryFn: async () => {
+      const response = await adminApi.dashboard.getRecentlyActive(20);
+      return response.data;
+    },
+  });
+
   if (statsLoading) {
     return (
       <div className="p-8">
@@ -158,6 +182,75 @@ export default function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
           )}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Active Users (Last 24 Hours)</h2>
+        {activeUsersChart && (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={activeUsersChart}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis 
+                dataKey="hour" 
+                tickFormatter={(value) => new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              />
+              <YAxis />
+              <Tooltip 
+                labelFormatter={(value) => new Date(value).toLocaleString()}
+              />
+              <Legend />
+              <Line type="monotone" dataKey="activeUsers" stroke="#8b5cf6" strokeWidth={2} name="Active Users" />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Currently Active Users</h2>
+          <p className="text-sm text-gray-600 mb-4">Active in the last 5 minutes</p>
+          <div className="space-y-3">
+            {currentlyActive?.map((user: any) => (
+              <div key={user.id} className="flex items-center justify-between py-2 border-b">
+                <div>
+                  <p className="font-medium text-gray-900">{user.name}</p>
+                  <p className="text-sm text-gray-600">{user.email}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-600">
+                    {new Date(user.lastActiveAt).toLocaleTimeString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {(!currentlyActive || currentlyActive.length === 0) && (
+              <p className="text-gray-500 text-center py-4">No currently active users</p>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Recently Active Users</h2>
+          <p className="text-sm text-gray-600 mb-4">Active in the last 24 hours</p>
+          <div className="space-y-3">
+            {recentlyActive?.map((user: any) => (
+              <div key={user.id} className="flex items-center justify-between py-2 border-b">
+                <div>
+                  <p className="font-medium text-gray-900">{user.name}</p>
+                  <p className="text-sm text-gray-600">{user.email}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-600">
+                    {new Date(user.lastActiveAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {(!recentlyActive || recentlyActive.length === 0) && (
+              <p className="text-gray-500 text-center py-4">No recently active users</p>
+            )}
+          </div>
         </div>
       </div>
 

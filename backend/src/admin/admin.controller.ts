@@ -58,6 +58,24 @@ export class AdminController {
     return this.adminService.getRecentUpgrades(limitNum);
   }
 
+  @Get('dashboard/active-users-chart')
+  async getActiveUsersChart(@Query('hours') hours?: string) {
+    const hoursNum = hours ? parseInt(hours, 10) : 24;
+    return this.adminService.getActiveUsersChart(hoursNum);
+  }
+
+  @Get('dashboard/currently-active')
+  async getCurrentlyActiveUsers(@Query('limit') limit?: string) {
+    const limitNum = limit ? parseInt(limit, 10) : 20;
+    return this.adminService.getCurrentlyActiveUsers(limitNum);
+  }
+
+  @Get('dashboard/recently-active')
+  async getRecentlyActiveUsers(@Query('limit') limit?: string) {
+    const limitNum = limit ? parseInt(limit, 10) : 20;
+    return this.adminService.getRecentlyActiveUsers(limitNum);
+  }
+
   @Get('users')
   async listUsers(
     @Query('page') page?: string,

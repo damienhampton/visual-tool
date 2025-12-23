@@ -197,6 +197,58 @@ export class AdminService {
     });
   }
 
+  async getActiveUsersChart(hours: number = 24) {
+    const now = new Date();
+    const intervals = [];
+    
+    // Generate hourly intervals
+    for (let i = hours - 1; i >= 0; i--) {
+      const intervalStart = new Date(now.getTime() - i * 60 * 60 * 1000);
+      const intervalEnd = new Date(intervalStart.getTime() + 60 * 60 * 1000);
+      
+      const count = await this.userRepository
+        .createQueryBuilder('user')
+        .where('user.lastActiveAt >= :start', { start: intervalStart })
+        .andWhere('user.lastActiveAt < :end', { end: intervalEnd })
+        .getCount();
+      
+      intervals.push({
+        hour: intervalStart.toISOString(),
+        activeUsers: count,
+      });
+    }
+    
+    return intervals;
+  }
+
+  async getCurrentlyActiveUsers(limit: number = 20) {
+    // Consider users active if they were active in the last 5 minutes
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    
+    return this.userRepository.find({
+      where: {
+        lastActiveAt: MoreThan(fiveMinutesAgo),
+      },
+      order: { lastActiveAt: 'DESC' },
+      take: limit,
+      select: ['id', 'name', 'email', 'isGuest', 'lastActiveAt'],
+    });
+  }
+
+  async getRecentlyActiveUsers(limit: number = 20) {
+    // Get users active in the last 24 hours
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    
+    return this.userRepository.find({
+      where: {
+        lastActiveAt: MoreThan(twentyFourHoursAgo),
+      },
+      order: { lastActiveAt: 'DESC' },
+      take: limit,
+      select: ['id', 'name', 'email', 'isGuest', 'lastActiveAt'],
+    });
+  }
+
   async listUsers(page: number = 1, limit: number = 20, search?: string, filter?: string) {
     const skip = (page - 1) * limit;
     const queryBuilder = this.userRepository.createQueryBuilder('user');

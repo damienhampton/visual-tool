@@ -46,6 +46,12 @@ export const adminApi = {
       api.get(`/admin/dashboard/recent-signups?limit=${limit}`),
     getRecentUpgrades: (limit: number = 10) =>
       api.get(`/admin/dashboard/recent-upgrades?limit=${limit}`),
+    getActiveUsersChart: (hours: number = 24) =>
+      api.get(`/admin/dashboard/active-users-chart?hours=${hours}`),
+    getCurrentlyActive: (limit: number = 20) =>
+      api.get(`/admin/dashboard/currently-active?limit=${limit}`),
+    getRecentlyActive: (limit: number = 20) =>
+      api.get(`/admin/dashboard/recently-active?limit=${limit}`),
   },
   users: {
     list: (page: number = 1, limit: number = 20, search?: string, filter?: string) =>
