@@ -562,4 +562,31 @@ export class AdminService {
 
     return { user, tempPassword: sendEmail ? undefined : tempPassword };
   }
+
+  async fixStaleCollaborators() {
+    const diagrams = await this.diagramRepository.find();
+    let fixed = 0;
+
+    for (const diagram of diagrams) {
+      const ownerCollaborator = await this.collaboratorRepository.findOne({
+        where: { diagramId: diagram.id, userId: diagram.ownerId },
+      });
+
+      if (ownerCollaborator && ownerCollaborator.role !== 'owner') {
+        ownerCollaborator.role = 'owner' as any;
+        await this.collaboratorRepository.save(ownerCollaborator);
+        fixed++;
+      } else if (!ownerCollaborator) {
+        const newCollaborator = this.collaboratorRepository.create({
+          diagramId: diagram.id,
+          userId: diagram.ownerId,
+          role: 'owner' as any,
+        });
+        await this.collaboratorRepository.save(newCollaborator);
+        fixed++;
+      }
+    }
+
+    return { success: true, fixed, total: diagrams.length };
+  }
 }

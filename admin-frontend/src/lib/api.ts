@@ -80,6 +80,7 @@ export const adminApi = {
       api.get('/admin/diagrams', { params: { page, limit, search } }),
     get: (id: string) => api.get(`/admin/diagrams/${id}`),
     delete: (id: string) => api.delete(`/admin/diagrams/${id}`),
+    fixCollaborators: () => api.post('/admin/diagrams/fix-collaborators'),
   },
   auditLogs: {
     list: (

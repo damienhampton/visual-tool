@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminApi } from '../lib/api';
-import { Search, Trash2 } from 'lucide-react';
+import { Search, Trash2, RefreshCw } from 'lucide-react';
 
 export default function Diagrams() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [fixMessage, setFixMessage] = useState('');
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
@@ -23,6 +24,16 @@ export default function Diagrams() {
     },
   });
 
+  const fixCollaboratorsMutation = useMutation({
+    mutationFn: () => adminApi.diagrams.fixCollaborators(),
+    onSuccess: (response) => {
+      const result = response.data;
+      setFixMessage(`Fixed ${result.fixed} of ${result.total} diagrams`);
+      setTimeout(() => setFixMessage(''), 5000);
+      queryClient.invalidateQueries({ queryKey: ['diagrams'] });
+    },
+  });
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
@@ -32,7 +43,25 @@ export default function Diagrams() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Diagrams</h1>
+        <button
+          onClick={() => {
+            if (confirm('Fix stale collaborator data? This will sync diagram ownership with collaborator roles.')) {
+              fixCollaboratorsMutation.mutate();
+            }
+          }}
+          disabled={fixCollaboratorsMutation.isPending}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <RefreshCw className={`w-5 h-5 ${fixCollaboratorsMutation.isPending ? 'animate-spin' : ''}`} />
+          Fix Collaborators
+        </button>
       </div>
+
+      {fixMessage && (
+        <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">
+          {fixMessage}
+        </div>
+      )}
 
       <div className="bg-white rounded-lg shadow mb-6">
         <div className="p-6 border-b">

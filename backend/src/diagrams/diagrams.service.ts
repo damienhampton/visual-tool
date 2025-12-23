@@ -84,7 +84,7 @@ export class DiagramsService {
       isPublic: collab.diagram.isPublic,
       createdAt: collab.diagram.createdAt,
       updatedAt: collab.diagram.updatedAt,
-      userRole: collab.role,
+      userRole: collab.diagram.ownerId === user.id ? CollaboratorRole.OWNER : collab.role,
     }));
   }
 
@@ -314,6 +314,14 @@ export class DiagramsService {
   }
 
   private async getUserRole(diagramId: string, userId: string): Promise<CollaboratorRole | null> {
+    const diagram = await this.diagramRepository.findOne({
+      where: { id: diagramId },
+    });
+
+    if (diagram && diagram.ownerId === userId) {
+      return CollaboratorRole.OWNER;
+    }
+
     const collaborator = await this.collaboratorRepository.findOne({
       where: { diagramId, userId },
     });

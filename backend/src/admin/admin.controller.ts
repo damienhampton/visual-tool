@@ -226,4 +226,17 @@ export class AdminController {
     );
     return result;
   }
+
+  @Post('diagrams/fix-collaborators')
+  async fixStaleCollaborators(@Request() req) {
+    const result = await this.adminService.fixStaleCollaborators();
+    await this.auditLogService.log(
+      req.user.id,
+      'FIX_COLLABORATORS',
+      'diagram',
+      undefined,
+      { fixed: result.fixed },
+    );
+    return result;
+  }
 }

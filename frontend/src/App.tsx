@@ -109,27 +109,30 @@ function Flow({ diagramId }: FlowProps) {
     }
   };
 
-  const saveDiagram = useCallback(async () => {
-    if (!diagramId) return;
-    try {
-      await diagramApi.update(diagramId, {
-        data: {
-          nodes,
-          edges,
-          viewport: { x: 0, y: 0, zoom: 1 },
-        },
-      });
-    } catch (error) {
-      console.error('Failed to save diagram:', error);
-    }
-  }, [diagramId, nodes, edges]);
-
   useEffect(() => {
-    if (diagramId && nodes.length > 0) {
-      const timeoutId = setTimeout(saveDiagram, 1000);
-      return () => clearTimeout(timeoutId);
+    if (!diagramId || !diagram) return;
+    
+    // Only autosave if user has edit permissions
+    if (diagram.userRole !== 'owner' && diagram.userRole !== 'editor') {
+      return;
     }
-  }, [nodes, edges, diagramId, saveDiagram]);
+    
+    const timeoutId = setTimeout(async () => {
+      try {
+        await diagramApi.update(diagramId, {
+          data: {
+            nodes,
+            edges,
+            viewport: { x: 0, y: 0, zoom: 1 },
+          },
+        });
+      } catch (error) {
+        console.error('Failed to save diagram:', error);
+      }
+    }, 1000);
+    
+    return () => clearTimeout(timeoutId);
+  }, [nodes, edges, diagramId, diagram]);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
