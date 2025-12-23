@@ -6,8 +6,8 @@ import {
   UseGuards,
   Req,
   BadRequestException,
-  RawBodyRequest,
 } from '@nestjs/common';
+import type { RawBodyRequest } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { SubscriptionsService } from './subscriptions.service';
@@ -27,9 +27,7 @@ export class SubscriptionsController {
     if (!stripeKey || stripeKey === 'sk_test_51placeholder') {
       this.stripe = null as any;
     } else {
-      this.stripe = new Stripe(stripeKey, {
-        apiVersion: '2024-12-18.acacia',
-      });
+      this.stripe = new Stripe(stripeKey);
     }
   }
 
@@ -97,11 +95,11 @@ export class SubscriptionsController {
 
     try {
       event = this.stripe.webhooks.constructEvent(
-        req.rawBody,
+        req.rawBody || Buffer.from(''),
         sig,
         webhookSecret,
       );
-    } catch (err) {
+    } catch (err: any) {
       throw new BadRequestException(`Webhook Error: ${err.message}`);
     }
 

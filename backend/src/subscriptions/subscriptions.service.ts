@@ -21,14 +21,12 @@ export class SubscriptionsService {
     private configService: ConfigService,
   ) {
     const stripeKey = this.configService.get('STRIPE_SECRET_KEY');
-    if (!stripeKey || stripeKey === 'sk_test_51placeholder') {
+    if (!stripeKey || stripeKey.includes('placeholder')) {
       console.warn('⚠️  Stripe API key not configured. Subscription features will be limited.');
-      // Initialize with a dummy key to prevent crashes, but features won't work
       this.stripe = null as any;
     } else {
-      this.stripe = new Stripe(stripeKey, {
-        apiVersion: '2024-12-18.acacia',
-      });
+      this.stripe = new Stripe(stripeKey);
+      console.log('✅ Stripe initialized successfully');
     }
   }
 
@@ -107,7 +105,7 @@ export class SubscriptionsService {
 
     return {
       sessionId: session.id,
-      url: session.url,
+      url: session.url || '',
     };
   }
 
@@ -161,9 +159,9 @@ export class SubscriptionsService {
     subscription.status = stripeSubscription.status as SubscriptionStatus;
     subscription.stripeSubscriptionId = stripeSubscription.id;
     subscription.stripePriceId = stripeSubscription.items.data[0].price.id;
-    subscription.currentPeriodStart = new Date(stripeSubscription.current_period_start * 1000);
-    subscription.currentPeriodEnd = new Date(stripeSubscription.current_period_end * 1000);
-    subscription.cancelAtPeriodEnd = stripeSubscription.cancel_at_period_end;
+    subscription.currentPeriodStart = new Date((stripeSubscription as any).current_period_start * 1000);
+    subscription.currentPeriodEnd = new Date((stripeSubscription as any).current_period_end * 1000);
+    subscription.cancelAtPeriodEnd = (stripeSubscription as any).cancel_at_period_end;
 
     await this.subscriptionRepository.save(subscription);
   }
@@ -176,12 +174,12 @@ export class SubscriptionsService {
     if (!subscription) return;
 
     subscription.status = stripeSubscription.status as SubscriptionStatus;
-    subscription.currentPeriodStart = new Date(stripeSubscription.current_period_start * 1000);
-    subscription.currentPeriodEnd = new Date(stripeSubscription.current_period_end * 1000);
-    subscription.cancelAtPeriodEnd = stripeSubscription.cancel_at_period_end;
+    subscription.currentPeriodStart = new Date((stripeSubscription as any).current_period_start * 1000);
+    subscription.currentPeriodEnd = new Date((stripeSubscription as any).current_period_end * 1000);
+    subscription.cancelAtPeriodEnd = (stripeSubscription as any).cancel_at_period_end;
 
-    if (stripeSubscription.canceled_at) {
-      subscription.canceledAt = new Date(stripeSubscription.canceled_at * 1000);
+    if ((stripeSubscription as any).canceled_at) {
+      subscription.canceledAt = new Date((stripeSubscription as any).canceled_at * 1000);
     }
 
     await this.subscriptionRepository.save(subscription);
@@ -203,7 +201,7 @@ export class SubscriptionsService {
 
   private async handlePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
     const subscription = await this.subscriptionRepository.findOne({
-      where: { stripeSubscriptionId: invoice.subscription as string },
+      where: { stripeSubscriptionId: (invoice as any).subscription as string },
     });
 
     if (!subscription) return;
