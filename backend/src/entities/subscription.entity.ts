@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -26,11 +27,13 @@ export enum SubscriptionStatus {
 }
 
 @Entity('subscriptions')
+@Index(['status', 'tier'])
 export class Subscription {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'uuid' })
+  @Index()
   userId: string;
 
   @ManyToOne(() => User)
@@ -42,6 +45,7 @@ export class Subscription {
     enum: SubscriptionTier,
     default: SubscriptionTier.FREE,
   })
+  @Index()
   tier: SubscriptionTier;
 
   @Column({
@@ -49,6 +53,7 @@ export class Subscription {
     enum: SubscriptionStatus,
     default: SubscriptionStatus.ACTIVE,
   })
+  @Index()
   status: SubscriptionStatus;
 
   @Column({ nullable: true })

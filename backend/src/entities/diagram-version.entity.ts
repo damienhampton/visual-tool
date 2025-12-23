@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { Diagram } from './diagram.entity';
 import { User } from './user.entity';
@@ -39,11 +40,13 @@ export interface DiagramData {
 }
 
 @Entity('diagram_versions')
+@Index(['diagramId', 'version'])
 export class DiagramVersion {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ name: 'diagram_id' })
+  @Index()
   diagramId: string;
 
   @ManyToOne(() => Diagram, (diagram) => diagram.versions)

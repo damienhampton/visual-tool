@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  Index,
 } from 'typeorm';
 import { Diagram } from './diagram.entity';
 import { DiagramCollaborator } from './diagram-collaborator.entity';
@@ -33,9 +34,11 @@ export class User {
   lastActiveAt: Date;
 
   @CreateDateColumn()
+  @Index()
   createdAt: Date;
 
   @UpdateDateColumn()
+  @Index()
   updatedAt: Date;
 
   @OneToMany(() => Diagram, (diagram) => diagram.owner)

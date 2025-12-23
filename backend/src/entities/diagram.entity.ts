@@ -7,12 +7,14 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  Index,
 } from 'typeorm';
 import { User } from './user.entity';
 import { DiagramVersion } from './diagram-version.entity';
 import { DiagramCollaborator } from './diagram-collaborator.entity';
 
 @Entity('diagrams')
+@Index(['ownerId', 'createdAt'])
 export class Diagram {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -21,6 +23,7 @@ export class Diagram {
   title: string;
 
   @Column({ name: 'owner_id' })
+  @Index()
   ownerId: string;
 
   @ManyToOne(() => User, (user) => user.diagrams)
@@ -34,6 +37,7 @@ export class Diagram {
   isPublic: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
+  @Index()
   createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
