@@ -160,21 +160,24 @@ export class AdminService {
   }
 
   async getTopUsers(limit: number = 10) {
-    const users = await this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.diagrams', 'diagram')
-      .loadRelationCountAndMap('user.diagramCount', 'user.diagrams')
-      .orderBy('user.diagramCount', 'DESC')
-      .take(limit)
-      .getMany();
+    // Get all users with their diagram counts
+    const allUsers = await this.userRepository.find({
+      relations: ['diagrams'],
+    });
 
-    return users.map((user) => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      diagramCount: user['diagramCount'] || 0,
-      createdAt: user.createdAt,
-    }));
+    // Sort by diagram count and take top N
+    const sortedUsers = allUsers
+      .map(user => ({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        diagramCount: user.diagrams?.length || 0,
+        createdAt: user.createdAt,
+      }))
+      .sort((a, b) => b.diagramCount - a.diagramCount)
+      .slice(0, limit);
+
+    return sortedUsers;
   }
 
   async getRecentSignups(limit: number = 10) {

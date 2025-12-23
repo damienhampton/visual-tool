@@ -47,13 +47,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     const response = await adminApi.auth.login(email, password);
-    const { access_token, user: userData } = response.data;
+    const { accessToken, user: userData } = response.data;
     
     if (!userData.isAdmin) {
       throw new Error('Admin access required');
     }
 
-    localStorage.setItem('adminToken', access_token);
+    localStorage.setItem('adminToken', accessToken);
     setUser(userData);
   };
 

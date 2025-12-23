@@ -37,6 +37,7 @@ export class AuthController {
       email: user.email,
       name: user.name,
       isGuest: user.isGuest,
+      isAdmin: user.isAdmin,
     };
   }
 }
