@@ -99,11 +99,19 @@ visual-tool/
 │   ├── Dockerfile
 │   └── README.md
 │
-└── docs/               # Documentation
-    ├── LAUNCH.md       # Pre-launch checklist
-    ├── DEPLOYMENT.md   # Deployment guide
-    ├── PLANNING.md     # Project planning and roadmap
-    └── TESTING.md      # Testing strategy
+├── docs/               # Documentation
+│   ├── LAUNCH.md       # Pre-launch checklist
+│   ├── DEPLOYMENT.md   # Deployment guide
+│   ├── TESTING.md      # Testing strategy
+│   ├── STRIPE_BILLING.md # Stripe integration guide
+│   ├── ADMIN_QUICKSTART.md # Admin panel setup
+│   ├── ADMIN_USER_MANAGEMENT.md # User management guide
+│   ├── CHATWOOT_SETUP.md # Customer support setup
+│   ├── PASSWORD_RESET_AND_INVITATIONS.md # Password reset flow
+│   └── PHASE4_SUMMARY.md # Phase 4 completion summary
+│
+├── PLANNING.md         # Project planning and roadmap
+└── README.md           # This file
 ```
 
 ## 🛠️ Tech Stack
@@ -283,13 +291,15 @@ NEXT_PUBLIC_APP_URL=http://localhost:5173
 
 ## 📚 Documentation
 
-- **[LAUNCH.md](./LAUNCH.md)** - Complete pre-launch checklist and deployment guide
-- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Detailed deployment instructions for Render and Vercel
+- **[LAUNCH.md](./docs/LAUNCH.md)** - Complete pre-launch checklist and deployment guide
+- **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - Detailed deployment instructions for Render and Vercel
 - **[PLANNING.md](./PLANNING.md)** - Project planning, roadmap, and feature tracking
-- **[TESTING.md](./TESTING.md)** - Testing strategy and guidelines
-- **[STRIPE_BILLING.md](./STRIPE_BILLING.md)** - Stripe integration guide
-- **[ADMIN_QUICKSTART.md](./ADMIN_QUICKSTART.md)** - Admin panel setup guide
-- **[CHATWOOT_SETUP.md](./CHATWOOT_SETUP.md)** - Customer support setup
+- **[TESTING.md](./docs/TESTING.md)** - Testing strategy and guidelines
+- **[STRIPE_BILLING.md](./docs/STRIPE_BILLING.md)** - Stripe integration guide
+- **[ADMIN_QUICKSTART.md](./docs/ADMIN_QUICKSTART.md)** - Admin panel setup guide
+- **[ADMIN_USER_MANAGEMENT.md](./docs/ADMIN_USER_MANAGEMENT.md)** - User management guide
+- **[PASSWORD_RESET_AND_INVITATIONS.md](./docs/PASSWORD_RESET_AND_INVITATIONS.md)** - Password reset and invitation flow
+- **[CHATWOOT_SETUP.md](./docs/CHATWOOT_SETUP.md)** - Customer support setup
 
 ## 🚢 Deployment
 
@@ -301,7 +311,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:5173
 4. Configure environment variables
 5. Set up custom domains
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
+See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for detailed instructions.
 
 ### Deploy Marketing Site to Vercel
 
@@ -329,7 +339,7 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
 2. **Database Sync**: `synchronize: true` in production is risky (needs proper migrations)
 3. **Test Failures**: Some E2E tests fail due to TypeORM/SQLite compatibility
 
-See [PLANNING.md](./PLANNING.md) for detailed issue tracking and solutions.
+See [PLANNING.md](./PLANNING.md) and [LAUNCH.md](./docs/LAUNCH.md) for detailed issue tracking and solutions.
 
 ## 🤝 Contributing
 
@@ -382,7 +392,7 @@ See [PLANNING.md](./PLANNING.md) for detailed issue tracking and solutions.
 - Static sites: Free
 - Vercel: Free tier
 
-See [LAUNCH.md](./LAUNCH.md) for detailed cost breakdown.
+See [LAUNCH.md](./docs/LAUNCH.md) for detailed cost breakdown.
 
 ## 📞 Support
 
