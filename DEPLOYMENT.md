@@ -7,9 +7,10 @@ This guide covers deploying the Visual Tool application to Render with automated
 - **Backend**: NestJS API with WebSocket support
 - **Frontend**: React user-facing application
 - **Admin Frontend**: React admin dashboard
+- **Marketing Site**: Next.js 14 marketing/promo site
 - **Database**: PostgreSQL 16
 - **CI/CD**: CircleCI for testing and deployment
-- **Hosting**: Render
+- **Hosting**: Render (backend, frontend, admin) + Vercel (marketing site)
 
 ## Cost Breakdown
 
@@ -416,6 +417,7 @@ cd backend && npm run test:e2e
 cd backend && npm run build
 cd frontend && npm run build
 cd admin-frontend && npm run build
+cd marketing-site && npm run build
 
 # View Render logs
 render logs -s visual-tool-backend --tail
@@ -423,3 +425,253 @@ render logs -s visual-tool-backend --tail
 # Trigger manual deploy
 render deploy -s visual-tool-backend
 ```
+
+---
+
+## Marketing Site Deployment (Vercel)
+
+The marketing site is deployed separately to Vercel for optimal performance and global CDN distribution.
+
+### Why Vercel for Marketing Site?
+
+- **Built for Next.js** - Created by the Next.js team, best integration
+- **Zero configuration** - Deploy in minutes with automatic builds
+- **Global CDN** - Automatic edge caching worldwide for fast loading
+- **Free tier** - Generous limits (100GB bandwidth/month)
+- **Automatic HTTPS** - SSL certificates included
+- **Preview deployments** - Every git push gets a preview URL
+- **Fast builds** - Optimized for Next.js with Turbopack support
+
+### Initial Vercel Setup
+
+#### 1. Create Vercel Account
+
+1. Go to https://vercel.com and sign up
+2. Connect your GitHub account
+3. Authorize Vercel to access your repository
+
+#### 2. Import Project
+
+1. Click "Add New Project" in Vercel Dashboard
+2. Select your GitHub repository
+3. Vercel will auto-detect Next.js configuration
+
+#### 3. Configure Project Settings
+
+**Root Directory:**
+- Set to: `marketing-site`
+
+**Framework Preset:**
+- Auto-detected as: Next.js
+
+**Build Settings:**
+- Build Command: `npm run build` (default)
+- Output Directory: `.next` (default)
+- Install Command: `npm install` (default)
+
+#### 4. Add Environment Variables
+
+Add these environment variables in Vercel project settings:
+
+**Required:**
+- `NEXT_PUBLIC_GA_ID` - Your Google Analytics Measurement ID (format: G-XXXXXXXXXX)
+- `NEXT_PUBLIC_APP_URL` - URL of your main application (e.g., `https://app.26diagrams.com` or `https://visual-tool-frontend.onrender.com`)
+
+**To add environment variables:**
+1. Go to Project Settings → Environment Variables
+2. Add each variable with appropriate value
+3. Select environments (Production, Preview, Development)
+4. Click "Save"
+
+#### 5. Deploy
+
+1. Click "Deploy" button
+2. Vercel will build and deploy automatically
+3. Your site will be live at `https://your-project.vercel.app`
+
+### Getting Your Google Analytics ID
+
+1. Go to https://analytics.google.com/
+2. Create a new GA4 property (or use existing one)
+3. Go to Admin → Data Streams → Web
+4. Copy your Measurement ID (format: G-XXXXXXXXXX)
+5. Add to Vercel environment variables as `NEXT_PUBLIC_GA_ID`
+
+### Custom Domain Setup
+
+#### 1. Add Domain in Vercel
+
+1. Go to Project Settings → Domains
+2. Click "Add Domain"
+3. Enter your domain (e.g., `26diagrams.com` or `www.26diagrams.com`)
+4. Click "Add"
+
+#### 2. Configure DNS
+
+Vercel will provide DNS records to add to your domain registrar:
+
+**For root domain (26diagrams.com):**
+- Type: A
+- Name: @
+- Value: 76.76.21.21
+
+**For www subdomain:**
+- Type: CNAME
+- Name: www
+- Value: cname.vercel-dns.com
+
+#### 3. Verify Domain
+
+1. Add DNS records to your domain registrar
+2. Wait for DNS propagation (can take up to 48 hours)
+3. Vercel will automatically verify and issue SSL certificate
+
+### Deployment Workflow
+
+#### Automatic Deployment
+
+**Production (main branch):**
+1. Push code to `main` branch
+2. Vercel automatically builds and deploys
+3. Live at your production domain
+
+**Preview Deployments:**
+1. Create a pull request or push to any branch
+2. Vercel creates a unique preview URL
+3. Perfect for testing before merging
+
+#### Manual Deployment
+
+**Via Vercel Dashboard:**
+1. Go to Deployments tab
+2. Click "Redeploy" on any previous deployment
+3. Or click "Deploy" to trigger new build
+
+**Via Vercel CLI:**
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Login
+vercel login
+
+# Deploy to preview
+vercel
+
+# Deploy to production
+vercel --prod
+```
+
+### Monitoring and Logs
+
+#### View Deployment Logs
+
+1. Go to Vercel Dashboard → Deployments
+2. Click on any deployment
+3. View build logs and runtime logs
+
+#### Analytics
+
+Vercel provides built-in analytics:
+- Real User Monitoring (RUM)
+- Web Vitals (Core Web Vitals)
+- Page views and unique visitors
+- Available in Project → Analytics tab
+
+### Troubleshooting
+
+#### Build Failures
+
+**Check build logs:**
+1. Go to failed deployment
+2. Review build logs for errors
+3. Common issues:
+   - Missing environment variables
+   - TypeScript errors
+   - Missing dependencies
+
+**Fix and redeploy:**
+```bash
+# Test build locally
+cd marketing-site
+npm run build
+
+# If successful, push to trigger new deployment
+git push origin main
+```
+
+#### Environment Variable Issues
+
+If changes aren't reflecting:
+1. Verify environment variables are set correctly
+2. Redeploy the project (Vercel caches env vars)
+3. Check variable names match code (case-sensitive)
+
+#### Domain Not Working
+
+1. Verify DNS records are correct
+2. Wait for DNS propagation (up to 48 hours)
+3. Check domain status in Vercel Dashboard
+4. Ensure SSL certificate is issued
+
+### Rollback Procedure
+
+#### Via Vercel Dashboard
+
+1. Go to Deployments tab
+2. Find previous successful deployment
+3. Click "..." menu → "Promote to Production"
+4. Confirm rollback
+
+#### Via Git
+
+```bash
+# Revert commit
+git revert HEAD
+git push origin main
+
+# Vercel will automatically deploy reverted version
+```
+
+### Cost and Limits
+
+**Free Tier (Hobby):**
+- 100GB bandwidth per month
+- Unlimited deployments
+- Unlimited preview deployments
+- Automatic HTTPS
+- Global CDN
+
+**Pro Tier ($20/month per user):**
+- 1TB bandwidth per month
+- Advanced analytics
+- Team collaboration
+- Password protection
+- Priority support
+
+The free tier is sufficient for most marketing sites.
+
+### Best Practices
+
+1. **Use Preview Deployments** - Test changes before merging to main
+2. **Monitor Analytics** - Track Core Web Vitals and performance
+3. **Optimize Images** - Use Next.js Image component for automatic optimization
+4. **Set Cache Headers** - Leverage Vercel's CDN for static assets
+5. **Use Environment Variables** - Never commit API keys or secrets
+6. **Test Locally First** - Run `npm run build` before pushing
+
+### Support and Resources
+
+- **Vercel Docs**: https://vercel.com/docs
+- **Vercel Status**: https://vercel-status.com
+- **Next.js Docs**: https://nextjs.org/docs
+- **Vercel Community**: https://github.com/vercel/vercel/discussions
+
+### Quick Reference
+
+**Marketing Site:**
+- **Repository Path**: `/marketing-site`
+- **Framework**: Next.js 14 (App Router)
+- **Hosting**: Vercel
+- **Production URL**: TBD (set up custom domain)
+- **Preview URL**: `https://your-project.vercel.app`

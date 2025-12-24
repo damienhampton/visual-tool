@@ -896,51 +896,88 @@ Focus on pragmatic testing that provides value without creating maintenance burd
 - **Diagramma** - diagramma.io
 - **Systema** - systema.io
 
-### Phase 10: Marketing & Promo Site
-- [ ] **Marketing Site Development**
-  - [ ] Choose framework (Next.js recommended for SEO)
-  - [ ] Design landing page
-  - [ ] Create features page with screenshots/demos
-  - [ ] Build pricing page (integrate with Stripe pricing)
+### Phase 10: Marketing & Promo Site ✅ COMPLETE (MVP)
+
+**Decisions Made:**
+- **Product Name**: 26 Diagrams (placeholder, final name TBD)
+- **Framework**: Next.js 14 (App Router) with TypeScript ✅
+- **Styling**: TailwindCSS + shadcn/ui components ✅
+- **Analytics**: Google Analytics (free tier) ✅
+- **CMS**: MDX for blog (free, file-based) ✅
+- **Hosting**: Vercel (recommended, not yet deployed)
+
+**Completed:**
+- [x] **Marketing Site Development**
+  - [x] Choose framework (Next.js 14 with App Router)
+  - [x] Design landing page (hero, features, CTA sections)
+  - [x] Create features page with feature cards
+  - [x] Build pricing page (3 tiers: Free, Pro, Team)
+  - [x] Add blog/resources section with MDX support
+  - [x] Set up analytics (Google Analytics via @next/third-parties)
+  - [x] Create header with navigation and mobile menu
+  - [x] Create footer with links and social icons
+  
+- [x] **Content Creation (Initial)**
+  - [x] Write compelling copy for landing page
+  - [x] Create feature descriptions (12 features)
+  - [x] Write initial blog posts (2 MDX posts)
+    - "Getting Started with C4 Model Diagrams"
+    - "Why We Built 26 Diagrams"
+  
+- [x] **Technical Setup (Development)**
+  - [x] Project scaffolding with create-next-app
+  - [x] Install and configure shadcn/ui
+  - [x] Install MDX dependencies (next-mdx-remote, gray-matter)
+  - [x] Install Google Analytics (@next/third-parties)
+  - [x] Install Framer Motion and Lucide icons
+  - [x] Create MDX blog infrastructure
+  - [x] Environment variable setup (.env.local)
+  - [x] Documentation (README.md, ENV_SETUP.md)
+  - [x] Build verification (successful production build)
+
+**Remaining Tasks:**
+- [ ] **Content Creation (Ongoing)**
   - [ ] Add testimonials section
   - [ ] Create use cases/examples page
-  - [ ] Add blog/resources section
-  - [ ] Implement contact form
-  - [ ] Set up analytics (Google Analytics, Plausible, or Fathom)
-  
-- [ ] **Content Creation**
-  - [ ] Write compelling copy for landing page
-  - [ ] Create feature descriptions
-  - [ ] Develop use case examples (C4 diagrams, architecture docs)
   - [ ] Record demo videos
   - [ ] Take product screenshots
-  - [ ] Write blog posts (SEO content)
+  - [ ] Write more blog posts (SEO content)
   - [ ] Create comparison content (vs Miro, vs Structurizr)
   
 - [ ] **SEO & Marketing**
   - [ ] Keyword research
-  - [ ] Meta tags and descriptions
+  - [x] Meta tags and descriptions (basic setup)
   - [ ] Open Graph images
   - [ ] Sitemap generation
   - [ ] Submit to search engines
   - [ ] Set up email capture/newsletter
   - [ ] Create social media presence
   
-- [ ] **Technical Setup**
-  - [ ] Deploy marketing site (Vercel recommended)
-  - [ ] Configure custom domain
-  - [ ] Set up SSL certificates
-  - [ ] Implement CDN for assets
+- [ ] **Technical Setup (Production)**
+  - [ ] Implement contact form
+  - [ ] Deploy marketing site to Vercel
+  - [ ] Configure custom domain (pending name decision)
+  - [ ] Set up SSL certificates (automatic with Vercel)
+  - [ ] Implement CDN for assets (automatic with Vercel)
   - [ ] Add cookie consent (GDPR compliance)
+  - [ ] Configure actual Google Analytics ID
 
-**Recommended Stack:**
+**Tech Stack Implemented:**
 - **Framework**: Next.js 14 (App Router) with TypeScript
 - **Styling**: TailwindCSS + shadcn/ui components
 - **Animations**: Framer Motion
-- **Forms**: React Hook Form + Zod validation
-- **Analytics**: Plausible (privacy-focused) or Google Analytics
-- **Hosting**: Vercel (free tier, excellent Next.js support)
-- **CMS** (optional): Contentful, Sanity, or MDX for blog
+- **Icons**: Lucide React
+- **Analytics**: Google Analytics (via @next/third-parties)
+- **CMS**: MDX for blog posts (file-based, free)
+- **Hosting**: Vercel (confirmed - best for Next.js, global CDN, free tier)
+
+**CMS Decision Rationale:**
+Chose MDX over Sanity/Contentful/Strapi because:
+- ✅ Free forever (no costs or limits)
+- ✅ Version controlled with code
+- ✅ No external dependencies
+- ✅ Fast (content bundled at build time)
+- ✅ Easy migration path to paid CMS later if needed
 
 ### Phase 11: Customer Support System
 - [ ] **Support Platform Selection**
