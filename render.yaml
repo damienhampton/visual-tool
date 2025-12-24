@@ -98,9 +98,74 @@ services:
       - key: VITE_API_URL
         value: https://visual-tool-backend.onrender.com
 
+  # Chatwoot (Customer Support)
+  - type: web
+    name: visual-tool-chatwoot
+    env: docker
+    region: oregon
+    plan: starter
+    dockerfilePath: ./chatwoot/Dockerfile
+    dockerContext: ./chatwoot
+    healthCheckPath: /
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: NODE_ENV
+        value: production
+      - key: INSTALLATION_ENV
+        value: docker
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://visual-tool-chatwoot.onrender.com
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: chatwoot-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: chatwoot-db
+          property: port
+      - key: POSTGRES_USERNAME
+        fromDatabase:
+          name: chatwoot-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: chatwoot-db
+          property: password
+      - key: POSTGRES_DATABASE
+        fromDatabase:
+          name: chatwoot-db
+          property: database
+      - key: REDIS_URL
+        sync: false
+      - key: REDIS_PASSWORD
+        sync: false
+      - key: MAILER_SENDER_EMAIL
+        sync: false
+      - key: SMTP_ADDRESS
+        value: smtp.resend.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USERNAME
+        value: resend
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_AUTHENTICATION
+        value: plain
+      - key: SMTP_ENABLE_STARTTLS_AUTO
+        value: true
+
 databases:
   - name: visual-tool-db
     databaseName: visual_tool
     user: visual_tool_user
+    plan: starter
+    region: oregon
+
+  - name: chatwoot-db
+    databaseName: chatwoot
+    user: chatwoot_user
     plan: starter
     region: oregon

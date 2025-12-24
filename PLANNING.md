@@ -980,7 +980,7 @@ Chose MDX over Sanity/Contentful/Strapi because:
 - ✅ Easy migration path to paid CMS later if needed
 
 ### Phase 11: Customer Support System
-- [ ] **Support Platform Selection**
+- [x] **Support Platform Selection** - Chatwoot (self-hosted with Upstash Redis)
 
 **Option A: Off-the-Shelf Solutions (Recommended)**
 
@@ -1054,27 +1054,51 @@ Chose MDX over Sanity/Contentful/Strapi because:
 - ❌ Missing advanced features (automation, analytics)
 - ❌ Not core product focus
 
-**Recommendation:**
-- **Start with Crisp** ($25/mo) or **Chatwoot** (self-hosted on Render)
-  - Quick to implement (1-2 days)
-  - Affordable
-  - All essential features
-  - Can migrate to Intercom/Zendesk later if needed
-  
-- **For Knowledge Base**: Consider separate solution
-  - **GitBook** (Free for open source, $6.70/user/mo)
-  - **Docusaurus** (Free, self-hosted)
-  - **Mintlify** (Free tier available)
-  - **Custom Next.js + MDX** (full control)
+**Decision: Chatwoot (Self-Hosted) + Upstash Redis**
 
-- [ ] **Implementation Tasks**
-  - [ ] Choose support platform
-  - [ ] Set up live chat widget in frontend
-  - [ ] Configure ticketing system
-  - [ ] Create knowledge base structure
-  - [ ] Write initial help articles
-  - [ ] Set up support email forwarding
-  - [ ] Train support team (if applicable)
-  - [ ] Create internal support documentation
-  - [ ] Set up support metrics/KPIs
-  - [ ] Implement customer satisfaction surveys
+**Implementation Details:**
+- **Platform**: Chatwoot (open source, self-hosted)
+- **Redis**: Upstash (free tier - 10,000 commands/day)
+- **Database**: PostgreSQL on Render ($7/month)
+- **Hosting**: Render Docker service ($7/month)
+- **Email**: Resend (already integrated)
+- **Total Cost**: $14/month (free Redis tier)
+
+**Features Included:**
+- ✅ Live chat widget
+- ✅ Ticketing system
+- ✅ Multi-channel support (email, website)
+- ✅ Team inbox
+- ✅ Canned responses
+- ✅ Reports and analytics
+- ✅ Mobile apps for support team
+- ✅ API for custom integrations
+
+**Setup Files:**
+- `/chatwoot/Dockerfile` - Docker configuration
+- `/chatwoot/README.md` - Detailed setup guide
+- `/CHATWOOT_SETUP.md` - Quick setup guide
+- `/render.yaml` - Updated with Chatwoot service
+
+**For Knowledge Base**: Use marketing site blog (MDX-based)
+- Already implemented in `/marketing-site`
+- Can create help/docs section
+- Free, version controlled
+- Easy to maintain
+
+- [x] **Implementation Tasks**
+  - [x] Choose support platform (Chatwoot)
+  - [x] Configure Render deployment
+  - [x] Set up Upstash Redis integration
+  - [x] Create setup documentation
+  - [ ] Deploy Chatwoot to Render
+  - [ ] Create Upstash Redis account
+  - [ ] Configure environment variables
+  - [ ] Set up first inbox
+  - [ ] Add chat widget to frontend
+  - [ ] Test end-to-end functionality
+  - [ ] Create canned responses
+  - [ ] Configure business hours
+  - [ ] Set up automation rules
+  - [ ] Add team members (when needed)
+  - [ ] Monitor usage and performance
